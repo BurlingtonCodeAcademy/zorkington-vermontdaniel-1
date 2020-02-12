@@ -17,6 +17,19 @@ let states = {
 
 let currentState = "green";
 
+
+
+
+
+//list of valid string inputs
+
+
+
+//list of functions
+function checkStatus(){
+
+}
+
 function enterState(newState) {
   let validTransitions = states[currentState].canChangeTo;
   if (validTransitions.includes(newState)) {
@@ -26,14 +39,47 @@ function enterState(newState) {
   }
 }
 
-start();
 
-async function start() {
-  const welcomeMessage = `182 Main St.
-You are standing on Main Street between Church and South Winooski.
-There is a door here. A keypad sits on the handle.
-On the door is a handwritten sign.`;
-  let answer = await ask(welcomeMessage);
-  console.log('Now write your code to make this work!');
-  process.exit();
+
+//list of classes
+class Room {
+    constructor(north, east, south, west, roomInventory, lock){
+        this.north = north;
+        this.east = east;
+        this.south = south;
+        this.west = west;
+        this.roomInventory = roomInventory;
+        this.lock = false;
+        this.move = function(room){
+            currentRoom = room
+        }
+    }
+}
+
+
+//list of rooms
+let startRoom = new Room (null, null, /*entry to nextroom */ null,  )
+
+
+//list of objects (if need)
+let player = {
+    playerInventory : null,
+    currentRoom : null,
+
+}
+
+//Player Information
+
+
+start ()
+
+async function start(){
+    
+console.log("You realize you are in a dark, dingy and smelly room.  You don't know how you got here, \nand frankly don't even remember your name!  You are facing a door with a sign on it, as well as multiple items on the other walls. What should you do?")
+
+let answer = ""
+while(answer !== 'exit') {
+    answer = await ask('>_ ')
+  }
+
 }
