@@ -72,6 +72,9 @@ class Room {
     this.checkInventory = function (room) {
 
     }
+    this.examineRoom = function (room) {
+      
+    }
 
   }
 }
@@ -105,22 +108,29 @@ const unmutableItemTable = {
 //list of rooms-----------------------------------------------------
 
 //connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room (null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true )
+let startRoom = new Room ('startRoom', 'dark, dingy, smelly room', null, null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true )
 
 //connects to 4 rooms, no items, is unlocked
-let centerRoom = new Room ('startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false)
+let centerRoom = new Room ('centerRoom', '', null, 'startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false)
 
 //connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(itemRoom) to unlock
-let hallwayRoom = new Room (null, null, 'finalRoom', 'centerRoom', ['lantern'], true )
+let hallwayRoom = new Room ('hallwayRoom', '', null, null, null, 'finalRoom', 'centerRoom', ['lantern'], true )
 
 //needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
-let itemRoom = new Room ('centerRoom', null, null,  null, ['hallwayRoomKey', 'trapRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false )
+let itemRoom = new Room ('itemRoom', '', null, 'centerRoom', null, null,  null, ['hallwayRoomKey', 'trapRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false )
 
 //connects: centerRoom(east), no items, needs key(itemRoom) to unlock, if entered should console.log losing message && change status to dead
-let trapRoom = new Room (null, 'centerRoom', null, null, [], true)
+let trapRoom = new Room ('trapRoom', '', null, null, 'centerRoom', null, null, [], true)
 
 //connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message, change status to relief
-let finalRoom = new Room ('hallwayRoom', null, null, null, [], true)
+let finalRoom = new Room ('finalRoom', '', null, 'hallwayRoom', null, null, null, [], true)
+
+console.log(startRoom)
+console.log(centerRoom)
+console.log(hallwayRoom)
+console.log(itemRoom)
+console.log(trapRoom)
+console.log(finalRoom)
 
 //list of objects --------------------------------------------------
 const playerEmotionalStatus = {
@@ -131,6 +141,7 @@ const playerEmotionalStatus = {
 
 const validActions = {
   signByDoor : ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign'],
+  statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue'],
   hallwayRoomKey : [],
   trapRoomKey : [],
   puzzle1 : [],
@@ -167,13 +178,17 @@ async function start() {
 
     // Interacting with the sign
     if (validActions.signByDoor.includes(sanitizeString(answer))) {
-      console.log(`\nYou selected ${answer}. \nYou walk over to the sign and read it. \nIt states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\n`)
+      console.log(`You prompted: ${answer}. \n\nYou walk over to the sign and read it. \nIt states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\n`)
 
-    } else {
-      console.log(`Sorry I don't recognize the prompt: ${answer}. Try again`)
+    } //else {
+      //console.log(`Sorry I don't recognize the prompt: ${answer}. Try //again.`)
+    //}
+
+    // Interacting with the Statue
+    if (validActions.statue.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}. \n\nYou see a partially destoryed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand. \nIt looks way too heavy to pick up or move.`)
     }
 
-    
 
     // Interacting with the statue and painting
     //if (invalidActions.includes(sanitizeString(answer))) {
