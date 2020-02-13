@@ -8,7 +8,7 @@ function ask(questionText) {
 }
 /********************************************************************/
 
-//State Machine ------------------------------------------------------
+// Room Transition State Machine
 let roomStates = {
   'startRoom': { canChangeTo: ['centerRoom'] },
   'centerRoom': { canChangeTo: ['startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom'] },
@@ -19,9 +19,13 @@ let roomStates = {
 
 let currentRoomState = "startRoom";
 
+
+//list of valid string inputs---------------------------------------
+
+
+
 //list of functions-------------------------------------------------
 function checkStatus() {
-
 }
 
 function enterRoomState(newRoomState) {
@@ -31,8 +35,8 @@ function enterRoomState(newRoomState) {
     console.log(`Moving from ${currentRoomState} to ${newRoomState}`)
     currentRoomState = newRoomState;
     console.log(`You are now in ${currentRoomState}`)
-    currentRoom = currentRoomState;
-    
+    return;
+
   } else {
     console.log(`Invalid pathway - from ${currentRoomState} to ${newRoomState}`);
   }
@@ -47,12 +51,12 @@ function sanitizeString(string) {
   return string;
 }
 
+
 //list of classes---------------------------------------------------
 class Room {
-  constructor(roomName, description, roomState, north, east, south, west, roomInventory, lock) {
+  constructor(roomName, description, north, east, south, west, roomInventory, lock) {
     this.roomName = roomName;
     this.description = description;
-    this.roomState = roomState;
     this.north = north;
     this.east = east;
     this.south = south;
@@ -125,15 +129,10 @@ let trapRoom = new Room ('trapRoom', '', null, null, 'centerRoom', null, null, [
 //connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let finalRoom = new Room ('finalRoom', '', null, 'hallwayRoom', null, null, null, [], true)
 
-console.log(startRoom)
-console.log(centerRoom)
-console.log(hallwayRoom)
-console.log(itemRoom)
-console.log(trapRoom)
-console.log(finalRoom)
+
 
 //list of objects --------------------------------------------------
-const playerEmotionalStatus = {
+let playerEmotionalStatus = {
   dead: 'dead',
   relief: 'relief',
   scared: 'scared',
@@ -142,6 +141,7 @@ const playerEmotionalStatus = {
 const validActions = {
   signByDoor : ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue'],
+  northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting'],
   hallwayRoomKey : [],
   trapRoomKey : [],
   puzzle1 : [],
@@ -151,8 +151,8 @@ const validActions = {
 }
 
 const invalidActions = {
-  statue : ['take the statue', 'take statue', 'move the statue', 'move statue', 'knock over the statue', 'knock over statue', 'break the statue', 'break statue'],
-  northPainting : ['take the painting', 'take painting', 'move the painting', 'move painting', 'break the painting', 'break painting'],
+  statue: ['take the statue', 'take statue', 'move the statue', 'move statue'],
+  northPainting : ['take the painting', 'take painting', 'move the painting', 'move painting',],
 }
 
 //Player Information------------------------------------------------
@@ -166,7 +166,7 @@ start()
 
 async function start() {
   //Start up message
-  console.log("\nYou realize you are in a dark, dingy and smelly room. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?\n")
+  console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`)
 
   // Game setup
   let answer = "";
@@ -179,28 +179,22 @@ async function start() {
     // Interacting with the sign
     if (validActions.signByDoor.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}. \n\nYou walk over to the sign and read it. \nIt states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\n`)
-
-    } //else {
-      //console.log(`Sorry I don't recognize the prompt: ${answer}. Try //again.`)
-    //}
-
+    } 
+    
     // Interacting with the Statue
     if (validActions.statue.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}. \n\nYou see a partially destoryed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand. \nIt looks way too heavy to pick up or move.`)
     }
 
 
-    // Interacting with the statue and painting
-    //if (invalidActions.includes(sanitizeString(answer))) {
-    //  console.log
-    //}
   }
 
 
 
 
 
+
   //if user hits exit at any point
-  console.log("Come on, don't be scared, figure out how to get out of the room!")
-  process.exit()
+  //console.log("Come on, don't be scared, figure out how to get out of the room!")
+ // process.exit()
 }
