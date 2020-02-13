@@ -18,9 +18,6 @@ let states = {
 let currentState = "green";
 
 
-
-
-
 //list of valid string inputs
 
 
@@ -75,11 +72,30 @@ start ()
 
 async function start(){
     
-console.log("You realize you are in a dark, dingy and smelly room.  You don't know how you got here, \nand frankly don't even remember your name!  You are facing a door with a sign on it, as well as multiple items on the other walls. What should you do?")
+console.log("You realize you are in a dark, dingy and smelly room.  You don't know how you got here, and frankly don't even remember your name!  You are facing a door with a sign on it, as well as multiple items on the other walls. What should you do?")
 
 let answer = ""
-while(answer !== 'exit') {
-    answer = await ask('>_ ')
+answer = await ask('>_ ')
+let entryAnswer = ["read sign", "read", "look"]
+  while(answer !== 'exit') {
+    
+    if (entryAnswer.includes(answer)){
+     console.log("You selected " + answer + ". You walk over to the sign and read it. It states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. Read carefully and choose wisely to get out of here....Alive!'")
+      console.log('this works')
+      process.exit()
+    }
+    else{//need to enter in a loop to get back to the original prompt
+      console.log("Sorry I don't recognize that prompt.Try again")
+      process.exit()
+    }
+
   }
 
+
+
+
+  
+//if user hits exit at any point
+  console.log("Come on, don't be scared, figure out how to get out of the room!")
+  process.exit()
 }
