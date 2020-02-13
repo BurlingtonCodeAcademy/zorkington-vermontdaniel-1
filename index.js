@@ -8,7 +8,7 @@ function ask(questionText) {
 }
 /********************************************************************/
 
-//State Machine ------------------------------------------------------
+//State Machines ------------------------------------------------------
 let roomStates = {
   'startRoom': { canChangeTo: ['centerRoom'] },
   'centerRoom': { canChangeTo: ['startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom'] },
@@ -125,12 +125,6 @@ let trapRoom = new Room ('trapRoom', '', null, null, 'centerRoom', null, null, [
 //connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let finalRoom = new Room ('finalRoom', '', null, 'hallwayRoom', null, null, null, [], true)
 
-console.log(startRoom)
-console.log(centerRoom)
-console.log(hallwayRoom)
-console.log(itemRoom)
-console.log(trapRoom)
-console.log(finalRoom)
 
 //list of objects --------------------------------------------------
 const playerEmotionalStatus = {
@@ -166,7 +160,7 @@ start()
 
 async function start() {
   //Start up message
-  console.log("\nYou realize you are in a dark, dingy and smelly room. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?\n")
+  console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?\n`)
 
   // Game setup
   let answer = "";
