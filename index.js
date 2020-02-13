@@ -130,7 +130,6 @@ let trapRoom = new Room ('trapRoom', '', null, null, 'centerRoom', null, null, [
 let finalRoom = new Room ('finalRoom', '', null, 'hallwayRoom', null, null, null, [], true)
 
 
-
 //list of objects --------------------------------------------------
 let playerEmotionalStatus = {
   dead: 'dead',
@@ -166,7 +165,7 @@ start()
 
 async function start() {
   //Start up message
-  console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`)
+  console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?\n`)
 
   // Game setup
   let answer = "";
