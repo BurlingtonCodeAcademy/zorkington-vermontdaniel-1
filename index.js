@@ -86,29 +86,29 @@ class Room {
   }
 }
 
-// List of Lookup Tables --------------------------------------------------
+// List of LookupTables --------------------------------------------------
 const roomTable = {
-  'startRoom' : startRoom,
-  'centerRoom' : centerRoom,
-  'hallwayRoom' : hallwayRoom,
-  'itemRoom' : itemRoom,
-  'trapRoom' : trapRoom,
-  'finalRoom' : finalRoom
+  startRoom : 'startRoom',
+  centerRoom : 'centerRoom',
+  hallwayRoom : 'hallwayRoom',
+  itemRoom : 'itemRoom',
+  trapRoom : 'trapRoom',
+  finalRoom : 'finalRoom'
 }
 
 const mutableItemTable = {
- 'signByDoor' : signByDoor,
- 'hallwayRoomKey' : hallwayRoomKey,
- 'trapRoomKey' : trapRoomKey,
- 'puzzle1' : puzzle1,
- 'puzzle2' : puzzle2,
- 'puzzle3' : puzzle3,
- 'lantern' : lantern
+ signByDoor : 'signByDoor',
+ hallwayRoomKey : 'hallwayRoomKey',
+ trapRoomKey : 'trapRoomKey',
+ puzzle1 : 'puzzle1',
+ puzzle2 : 'puzzle2',
+ puzzle3 : 'puzzle3',
+ lantern : 'lantern'
 }
 
 const unmutableItemTable = {
-  'statue' : statue,
-  'northPainting' : northPainting,
+  statue : 'statue',
+  northPainting : 'northPainting',
 
 }
 
