@@ -82,13 +82,20 @@ let trapRoom = new Room (null, /*centerRoom,*/ null, null, [], true)
 //connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message
 let finalRoom = new Room (/*hallwayRoom,*/ null, null, null, [], true)
 
-//list of objects (if need)-----------------------------------------
+//list of objects --------------------------------------------------
+let playerStatus = {
+  dead: 'dead',
+  relief: 'relief',
+  scared: 'scared',
+}
+
+
 
 //Player Information------------------------------------------------
 let player = {
     playerInventory : null,
     currentRoom : null,
-
+    currentStatus: null
 }
 
 
@@ -98,15 +105,19 @@ async function start(){
 //Start up message
 console.log("You realize you are in a dark, dingy and smelly room.  You don't know how you got here, and frankly don't even remember your name!  You are facing a door with a sign on it, as well as multiple items on the other walls. What should you do?")
 
-// Setup for answer to be used in loop
-let answer = ""
+// Game setup
+let answer = "";
+player.currentRoom = startRoom;
+player.currentStatus = playerStatus.scared;
+
 
   while(answer !== 'exit') {
     answer = await ask('>_ ')
-    if (entryAnswer.includes(answer)){
+
+    if (entryAnswer.includes(sanatizeString(answer))){
      console.log("You selected " + answer + ". You walk over to the sign and read it. It states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. Read carefully and choose wisely to get out of here....Alive!'")
       console.log('this works')
-      process.exit()
+      
     }
     else{//need to enter in a loop to get back to the original prompt
       console.log("Sorry I don't recognize that prompt.Try again")
