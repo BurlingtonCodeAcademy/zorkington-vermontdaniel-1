@@ -6,20 +6,23 @@ function ask(questionText) {
     readlineInterface.question(questionText, resolve);
   });
 }
+/********************************************************************/
 
-// remember the StateMachine lecture
-// https://bootcamp.burlingtoncodeacademy.com/lessons/cs/state-machines
-let states = {
-  'roomOne': { canChangeTo: ['roomTwo'] },
-  'roomTwo': { canChangeTo: ['roomThree'] },
-  'roomThree': { canChangeTo: ['roomOne'] }
+// Room Transition State Machine
+let roomStates = {
+  'startRoom': { canChangeTo: ['centerRoom'] },
+  'centerRoom': { canChangeTo: ['startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom'] },
+  'hallwayRoom': { canChangeTo: ['centerRoom', 'finalRoom'] },
+  'itemRoom' : { canChangeTo : ['centerRoom']},
+  'trapRoom' : { canChangeTo : ['centerRoom']},
 };
 
-let currentState = "green";
+let currentRoomState = "startRoom";
 
 
 //list of valid string inputs---------------------------------------
-const entryAnswer = ["read sign", "read", "look"]
+const validSignActions = ["read sign", "read", "look", 'read the sign', 'look at the sign']
+const invalidActions = ['take the painting', 'take the statue', 'take painting', 'take statue', 'move the painting', 'move the statue', 'move painting', 'move statue']
 
 
 //list of functions-------------------------------------------------
@@ -27,14 +30,23 @@ function checkStatus() {
 
 }
 
-function enterState(newState) {
-  let validTransitions = states[currentState].canChangeTo;
-  if (validTransitions.includes(newState)) {
-    currentState = newState;
+function enterRoomState(newRoomState) {
+  let validTransitions = roomStates[currentRoomState].canChangeTo;
+
+  if (validTransitions.includes(newRoomState)) {
+    console.log(`Moving from ${currentRoomState} to ${newRoomState}`)
+    currentRoomState = newRoomState;
+    console.log(`You are now in ${currentRoomState}`)
+    return;
+
   } else {
-    throw 'Invalid state transition attempted - from ' + currentState + ' to ' + newState;
+    console.log(`Invalid pathway - from ${currentRoomState} to ${newRoomState}`);
   }
 }
+
+console.log(enterRoomState('centerRoom'))
+console.log(enterRoomState('trapRoom'))
+console.log(enterRoomState('finalRoom'))
 
 function sanitizeString(string) {
   string = string
@@ -70,33 +82,33 @@ class Room {
     this.checkInventory = function (room) {
 
     }
-    
+
   }
 }
 
-// List of Tables --------------------------------------------------
+// List of Lookup Tables --------------------------------------------------
 const roomTable = {
-  startRoom : 'startRoom',
-  centerRoom : 'centerRoom',
-  hallwayRoom : 'hallwayRoom',
-  itemRoom : 'itemRoom',
-  trapRoom : 'trapRoom',
-  finalRoom : 'finalRoom'
+  'startRoom' : startRoom,
+  'centerRoom' : centerRoom,
+  'hallwayRoom' : hallwayRoom,
+  'itemRoom' : itemRoom,
+  'trapRoom' : trapRoom,
+  'finalRoom' : finalRoom
 }
 
 const mutableItemTable = {
- signByDoor : 'signByDoor',
- hallwayRoomKey : 'hallwayRoomKey',
- trapRoomKey : 'trapRoomKey',
- puzzle1 : 'puzzle1',
- puzzle2 : 'puzzle2',
- puzzle3 : 'puzzle3',
- lantern : 'lantern'
+ 'signByDoor' : signByDoor,
+ 'hallwayRoomKey' : hallwayRoomKey,
+ 'trapRoomKey' : trapRoomKey,
+ 'puzzle1' : puzzle1,
+ 'puzzle2' : puzzle2,
+ 'puzzle3' : puzzle3,
+ 'lantern' : lantern
 }
 
 const unmutableItemTable = {
-  statue : 'statue',
-  northPainting : 'northPainting',
+  'statue' : statue,
+  'northPainting' : northPainting,
 
 }
 
@@ -150,15 +162,18 @@ async function start() {
   while (answer !== 'exit') {
     answer = await ask('>_ ')
 
-    if (entryAnswer.includes(sanitizeString(answer))) {
+    // Interacting with the sign
+    if (validSignActions.includes(sanitizeString(answer))) {
       console.log(`You selected ${answer}. You walk over to the sign and read it. It states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. Read carefully and choose wisely to get out of here....Alive!`)
 
-
-    }
-    else {
+    } else {
       console.log(`Sorry I don't recognize the prompt: ${answer}. Try again`)
     }
 
+    // Interacting with the statue and painting
+    if (invalidActions.includes(sanitizeString(answer))) {
+      console.log
+    }
   }
 
 
