@@ -109,6 +109,24 @@ function userInputNotInValidCheck() {
     }
   }
 }
+function userRoomInputNotValidCheck() {
+  for (let array in validRoomActions) {
+    if (array.includes(answer)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
+function userRoomInputNotInValidCheck() {
+  for (let array in invalidRoomActions) {
+    if (array.includes(answer)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
 
 
 let currentEmot = emotionalLookup[currentEmotionalState]
@@ -142,12 +160,13 @@ class Room {
       if(this.lock === true){
         console.log('The door is locked. Our bad.')
       }
-      // else if(enterRoomState(room)){
-      //     return }
-      // else { 
-      //   player.currentRoom = room;
-      //   console.log('The door is unlocked, please come in')
-      // }
+      //issues are below
+      else if(enterRoomState(room)){
+           return }
+        else { 
+          player.currentRoom = room;
+          console.log('The door is unlocked, please come in')
+        }
     }
     this.take = function (room) {
 
@@ -277,9 +296,9 @@ async function start() {
     }
 
     // Checks for invalid user input
-    if (userInputNotValidCheck(answer) && userInputNotInValidCheck(answer)) {
+    if (userInputNotValidCheck(answer) && userInputNotInValidCheck(answer) && userRoomInputNotValidCheck(answer) && userRoomInputNotInValidCheck(answer)){
       console.log(`I dont recognize the input ${answer}.`)
-      answer = await ask('>_ ');
+      answer = await ask('>_ ')
     }
 
 
@@ -292,5 +311,5 @@ async function start() {
 
   //if user hits exit at any point
   //console.log("Come on, don't be scared, figure out how to get out of the room!")
-  // process.exit()
+   //process.exit()
 }
