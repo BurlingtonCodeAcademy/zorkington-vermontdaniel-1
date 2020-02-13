@@ -7,6 +7,8 @@ function ask(questionText) {
   });
 }
 /********************************************************************/
+let answer = "";
+
 // List of LookupTables --------------------------------------------------
 const roomTable = {
   startRoom : 'startRoom',
@@ -39,7 +41,10 @@ let emotionalLookup = {
   scared: 'scared'
  }
 
-// Room Transition State Machine
+
+// State Machines ---------------------------------------------------
+
+ // Room Transition State Machine
 let roomStates = {
   'startRoom': { canChangeTo: ['centerRoom'] },
   'centerRoom': { canChangeTo: ['startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom'] },
@@ -57,11 +62,6 @@ let playerEmotionalState = {
 "scared": {canChangeTo: ["relief", "dead"]}
 }
 let currentEmotionalState = 'scared'
-console.log(currentEmotionalState)
-
-//list of valid string inputs---------------------------------------
-
-
 
 //list of functions-------------------------------------------------
 function checkStatus() {
@@ -90,6 +90,25 @@ function sanitizeString(string) {
   return string;
 }
 
+function userInputNotValidCheck () {
+  for (let array in validActions) {
+    if (array.includes(answer)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
+
+function userInputNotInValidCheck () {
+  for (let array in invalidActions) {
+    if (array.includes(answer)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
 
 
 let currentEmot = emotionalLookup[currentEmotionalState]
@@ -105,8 +124,7 @@ function changeEmotion(change) {
          console.log('Current emotional state is: ' + currentEmotionalState)
        }
      }
-     console.log(changeEmotion("dead"))
-     console.log(changeEmotion("relief"))
+
 
 //list of classes---------------------------------------------------
 class Room {
@@ -201,21 +219,28 @@ async function start() {
   console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`)
 
   // Game setup
-  let answer = "";
   player.currentRoom = startRoom;
   player.currentStatus = playerEmotionalStatus.scared;
+  answer = await ask('>_ ')
 
   while (answer !== 'exit') {
-    answer = await ask('>_ ')
-
+    
     // Interacting with the sign
     if (validActions.signByDoor.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}. \n\nYou walk over to the sign and read it. \nIt states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\n`)
-    } 
+      answer = await ask('>_ ');
+    }
     
     // Interacting with the Statue
     if (validActions.statue.includes(sanitizeString(answer))) {
-      console.log(`You prompted: ${answer}. \n\nYou see a partially destoryed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand. \nIt looks way too heavy to pick up or move.`)
+      console.log(`You prompted: ${answer}. \n\nYou see a partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand. \nIt looks way too heavy to pick up or move.`)
+      answer = await ask('>_ ');
+    }
+
+    // Checks for invalid user input
+    if (userInputNotValidCheck(answer) && userInputNotInValidCheck(answer)) {
+      console.log(`I dont recognize the input ${answer}.`)
+      answer = await ask('>_ ');
     }
 
 
