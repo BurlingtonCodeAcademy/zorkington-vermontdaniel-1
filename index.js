@@ -7,6 +7,37 @@ function ask(questionText) {
   });
 }
 /********************************************************************/
+// List of LookupTables --------------------------------------------------
+const roomTable = {
+  startRoom : 'startRoom',
+  centerRoom : 'centerRoom',
+  hallwayRoom : 'hallwayRoom',
+  itemRoom : 'itemRoom',
+  trapRoom : 'trapRoom',
+  finalRoom : 'finalRoom'
+}
+
+const mutableItemTable = {
+ signByDoor : 'signByDoor',
+ hallwayRoomKey : 'hallwayRoomKey',
+ trapRoomKey : 'trapRoomKey',
+ puzzle1 : 'puzzle1',
+ puzzle2 : 'puzzle2',
+ puzzle3 : 'puzzle3',
+ lantern : 'lantern'
+}
+
+const unmutableItemTable = {
+  statue : 'statue',
+  northPainting : 'northPainting',
+
+}
+
+let emotionalLookup = {
+  dead: 'dead',
+  relief: 'relief',
+  scared: 'scared'
+ }
 
 // Room Transition State Machine
 let roomStates = {
@@ -19,6 +50,14 @@ let roomStates = {
 
 let currentRoomState = "startRoom";
 
+//Emotion Status State Machine
+let playerEmotionalState = {
+  "dead" : {canChangeTo:["dead"]},
+  "relief" : {canChangeTo: ["scared", "dead"]},
+"scared": {canChangeTo: ["relief", "dead"]}
+}
+let currentEmotionalState = 'scared'
+console.log(currentEmotionalState)
 
 //list of valid string inputs---------------------------------------
 
@@ -52,6 +91,23 @@ function sanitizeString(string) {
 }
 
 
+
+let currentEmot = emotionalLookup[currentEmotionalState]
+function changeEmotion(change) {
+    if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
+         console.log("Changing from state: " + currentEmotionalState)
+         currentEmotionalState = change
+         currentEmot = emotionalLookup[currentEmotionalState]
+         console.log('Current emotional state is: ' + currentEmotionalState)
+         
+       } else {
+         console.log('invalid emotional transition attempted')
+         console.log('Current emotional state is: ' + currentEmotionalState)
+       }
+     }
+     console.log(changeEmotion("dead"))
+     console.log(changeEmotion("relief"))
+
 //list of classes---------------------------------------------------
 class Room {
   constructor(roomName, description, north, east, south, west, roomInventory, lock) {
@@ -83,32 +139,9 @@ class Room {
   }
 }
 
-// List of LookupTables --------------------------------------------------
-const roomTable = {
-  startRoom : 'startRoom',
-  centerRoom : 'centerRoom',
-  hallwayRoom : 'hallwayRoom',
-  itemRoom : 'itemRoom',
-  trapRoom : 'trapRoom',
-  finalRoom : 'finalRoom'
-}
 
-const mutableItemTable = {
- signByDoor : 'signByDoor',
- hallwayRoomKey : 'hallwayRoomKey',
- trapRoomKey : 'trapRoomKey',
- puzzle1 : 'puzzle1',
- puzzle2 : 'puzzle2',
- puzzle3 : 'puzzle3',
- lantern : 'lantern'
-}
 
-const unmutableItemTable = {
-  statue : 'statue',
-  northPainting : 'northPainting',
-
-}
-
+ 
 //list of rooms-----------------------------------------------------
 
 //connects: centerRoom(south), has three items and is locked.
