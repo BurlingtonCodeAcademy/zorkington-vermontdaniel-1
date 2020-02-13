@@ -48,20 +48,29 @@ function sanitizeString(string) {
 
 //list of classes---------------------------------------------------
 class Room {
-  constructor(north, east, south, west, roomInventory, lock) {
-    //add room name property
-    //add description property
+  constructor(roomName, description, north, east, south, west, roomInventory, lock) {
+    this.roomName = roomName;
+    this.description = description;
     this.north = north;
     this.east = east;
     this.south = south;
     this.west = west;
     this.roomInventory = roomInventory || [];
     this.lock = lock;
-
-    // need to check on functions
+    //Functions
     this.move = function (room) {
       currentRoom = room
     }
+    this.take = function (room) {
+
+    }
+    this.drop = function (room) {
+
+    }
+    this.checkInventory = function (room) {
+
+    }
+    
   }
 }
 
@@ -76,26 +85,34 @@ const roomTable = {
 }
 
 const mutableItemTable = {
-
+ signByDoor : 'signByDoor',
+ hallwayRoomKey : 'hallwayRoomKey',
+ trapRoomKey : 'trapRoomKey',
+ puzzle1 : 'puzzle1',
+ puzzle2 : 'puzzle2',
+ puzzle3 : 'puzzle3',
+ lantern : 'lantern'
 }
 
 const unmutableItemTable = {
-  
+  statue : 'statue',
+  northPainting : 'northPainting',
+
 }
 
 //list of rooms-----------------------------------------------------
 
 //connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room (null, null, 'centerRoom', null, ['statue', 'north painting', 'sign by door'], true )
+let startRoom = new Room (null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true )
 
 //connects to 4 rooms, no items, is unlocked
 let centerRoom = new Room ('startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false)
 
 //connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(itemRoom) to unlock
-let hallwayRoom = new Room (null, null, 'finalRoom', 'centerRoom', /*[inventory: needs interactive puzzle*/ [], true )
+let hallwayRoom = new Room (null, null, 'finalRoom', 'centerRoom', ['lantern'], true )
 
 //needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
-let itemRoom = new Room ('centerRoom', null, null,  null, ['hallwayRoom key', 'trapRoom key', 'puzzle 1', 'puzzle 2', 'puzzle 3'], false )
+let itemRoom = new Room ('centerRoom', null, null,  null, ['hallwayRoomKey', 'trapRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false )
 
 //connects: centerRoom(east), no items, needs key(itemRoom) to unlock, if entered should console.log losing message && change status to dead
 let trapRoom = new Room (null, 'centerRoom', null, null, [], true)
@@ -114,7 +131,7 @@ let playerEmotionalStatus = {
 
 //Player Information------------------------------------------------
 let player = {
-  playerInventory: null,
+  playerInventory: [],
   currentRoom: null,
   currentStatus: null
 }
@@ -134,13 +151,12 @@ async function start() {
     answer = await ask('>_ ')
 
     if (entryAnswer.includes(sanitizeString(answer))) {
-      console.log("You selected " + answer + ". You walk over to the sign and read it. It states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. Read carefully and choose wisely to get out of here....Alive!'")
+      console.log(`You selected ${answer}. You walk over to the sign and read it. It states 'There is only 1 safe way out - if you choose poorly, you will meet your demise. Read carefully and choose wisely to get out of here....Alive!`)
 
 
     }
-    else {//need to enter in a loop to get back to the original prompt
-      console.log("Sorry I don't recognize that prompt.Try again")
-      process.exit()
+    else {
+      console.log(`Sorry I don't recognize the prompt: ${answer}. Try again`)
     }
 
   }
