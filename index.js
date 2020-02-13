@@ -63,12 +63,12 @@ class Room {
 
 // List of Tables --------------------------------------------------
 const roomTable = {
-  startRoom = 'startRoom',
-  centerRoom = 'centerRoom',
-  hallwayRoom = 'hallwayRoom',
-  itemRoom = 'itemRoom',
-  trapRoom = 'trapRoom',
-  finalRoom = 'finalRoom'
+  startRoom : 'startRoom',
+  centerRoom : 'centerRoom',
+  hallwayRoom : 'hallwayRoom',
+  itemRoom : 'itemRoom',
+  trapRoom : 'trapRoom',
+  finalRoom : 'finalRoom'
 }
 
 //list of rooms-----------------------------------------------------
@@ -85,10 +85,10 @@ let hallwayRoom = new Room (null, null, 'finalRoom', 'centerRoom', /*[inventory:
 //needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let itemRoom = new Room ('centerRoom', null, null,  null, ['hallwayRoom key', 'trapRoom key', 'puzzle 1', 'puzzle 2', 'puzzle 3'] )
 
-//connects: centerRoom(east), no items, needs key(itemRoom) to unlock, if entered should console.log losing method && change status
+//connects: centerRoom(east), no items, needs key(itemRoom) to unlock, if entered should console.log losing message && change status to dead
 let trapRoom = new Room (null, 'centerRoom', null, null, [], true)
 
-//connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message
+//connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let finalRoom = new Room ('hallwayRoom', null, null, null, [], true)
 
 //list of objects --------------------------------------------------
@@ -107,7 +107,8 @@ let player = {
   currentStatus: null
 }
 
-
+console.log(startRoom)
+console.log(centerRoom)
 start()
 
 async function start() {
