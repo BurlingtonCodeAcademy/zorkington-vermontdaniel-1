@@ -41,7 +41,7 @@ function validUserInput() {
 }
 
 //filler, will check user emotional status
-function checkStatus() {}
+function checkStatus() { }
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -83,9 +83,9 @@ function userItemInputNotValidCheck() {
 function userItemInputNotInValidCheck() {
   for (let array in invalidItemActions) {
     if (array.includes(answer)) {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   }
 }
@@ -105,9 +105,9 @@ function userRoomInputNotValidCheck() {
 function userRoomInputNotInValidCheck() {
   for (let array in invalidRoomActions) {
     if (array.includes(answer)) {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   }
 }
@@ -150,10 +150,10 @@ class Room {
     //     console.log('The door is unlocked, please come in')
     //   }
     // }
-    this.take = function(room) {};
-    this.drop = function(room) {};
-    this.checkInventory = function(room) {};
-    this.examineRoom = function(room) {};
+    this.take = function (room) { };
+    this.drop = function (room) { };
+    this.checkInventory = function (room) { };
+    this.examineRoom = function (room) { };
   }
 }
 
