@@ -34,7 +34,7 @@ let currentEmotionalState = 'scared';
 //list of functions--------------------------------------------------------------------------------------------------------------------------------------
 
 //filler, will check user emotional status
-function checkStatus() {}
+function checkStatus() { }
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -73,12 +73,34 @@ function userInputValidCheck() {
 }
 
 //checks if user input cannot be used on items
-function userInputInvalidCheck() {
-  for (let array in invalidActions) {
+function userItemInputNotInValidCheck() {
+  for (let array in invalidItemActions) {
+    if (array.includes(answer)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+//checks if user input can be used on rooms
+function userRoomInputNotValidCheck() {
+  for (let array in validRoomActions) {
     if (array.includes(answer)) {
       return false;
     } else {
       return true;
+    }
+  }
+}
+
+//checks if user input cannot be used on rooms
+function userRoomInputNotInValidCheck() {
+  for (let array in invalidRoomActions) {
+    if (array.includes(answer)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
@@ -121,10 +143,10 @@ class Room {
     //     console.log('The door is unlocked, please come in')
     //   }
     // }
-    this.take = function(room) {};
-    this.drop = function(room) {};
-    this.checkInventory = function(room) {};
-    this.examineRoom = function(room) {};
+    this.take = function (room) { };
+    this.drop = function (room) { };
+    this.checkInventory = function (room) { };
+    this.examineRoom = function (room) { };
   }
 }
 
