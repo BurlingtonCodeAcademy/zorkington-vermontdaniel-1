@@ -269,7 +269,7 @@ async function startGame() {
 
 async function play() {
   answer = await ask(validActions.prompt);
-
+//
   //// Checks for invalid user input
   //if (userInputValidCheck(answer) && userInputInvalidCheck(answer) === true) {
   //  console.log('dont recognize that');
