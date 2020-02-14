@@ -33,13 +33,6 @@ let currentEmotionalState = 'scared';
 
 //list of functions--------------------------------------------------------------------------------------------------------------------------------------
 
-//checks for ANY valid and invalid input
-function validUserInput() {
-  if (userItemInputNotValidCheck() && userItemInputNotInValidCheck() && userRoomInputNotValidCheck() && userRoomInputNotInValidCheck()) {
-    return true;
-  }
-}
-
 //filler, will check user emotional status
 function checkStatus() {}
 
@@ -69,8 +62,8 @@ function sanitizeString(string) {
 }
 
 // Checks if user input can be used on items
-function userItemInputNotValidCheck() {
-  for (let array in validItemActions) {
+function userInputValidCheck() {
+  for (let array in validActions) {
     if (array.includes(answer)) {
       return false;
     } else {
@@ -80,30 +73,8 @@ function userItemInputNotValidCheck() {
 }
 
 //checks if user input cannot be used on items
-function userItemInputNotInValidCheck() {
-  for (let array in invalidItemActions) {
-    if (array.includes(answer)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
-
-//checks if user input can be used on rooms
-function userRoomInputNotValidCheck() {
-  for (let array in validRoomActions) {
-    if (array.includes(answer)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
-
-//checks if user input cannot be used on rooms
-function userRoomInputNotInValidCheck() {
-  for (let array in invalidRoomActions) {
+function userInputInvalidCheck() {
+  for (let array in invalidActions) {
     if (array.includes(answer)) {
       return false;
     } else {
@@ -160,7 +131,7 @@ class Room {
 //list of rooms------------------------------------------------------------------------------------------------------------------------------------------
 
 //connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room('startRoom', 'dark, dingy, smelly room', null, null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true);
+let startRoom = new Room('startRoom', 'dark, dingy, smelly room', null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true);
 
 //connects to 4 rooms, no items, is unlocked
 let centerRoom = new Room('centerRoom', '', null, 'startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false);
@@ -184,7 +155,7 @@ const playerEmotionalStatus = {
   scared: 'scared',
 };
 
-const validItemActions = {
+const validActions = {
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
@@ -194,28 +165,18 @@ const validItemActions = {
   puzzle2: [],
   puzzle3: [],
   lantern: [],
-};
-
-const validPlayerActions = {
-  checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
-};
-
-const invalidItemActions = {
-  statue: ['take the statue', 'take statue', 'move the statue', 'move statue', 'break', 'break statue'],
-  northPainting: ['take the painting', 'take painting', 'move the painting', 'move painting'],
-};
-
-const validRoomActions = {
   door: ['open door', 'access door', 'enter door', 'unlock door', 'enter code', 'put in code', 'code'],
-};
-
-const invalidRoomActions = {
-  door: ['kick door', 'break door', 'burn down door', 'burn door', 'barge down door', 'barge down the door'],
-};
-
-const startGameInput = {
+  checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
   yes: ['yes', 'yeah', 'y', 'yes ready'],
   no: ['no', 'n', 'not ready'],
+  prompt: ['>_ '],
+  keyCode: ['enter 0314', 'code in 0314', 'key 0314', 'key in 0314', 'code 0314'],
+};
+
+const invalidActions = {
+  statue: ['take the statue', 'take statue', 'move the statue', 'move statue', 'break', 'break statue'],
+  northPainting: ['take the painting', 'take painting', 'move the painting', 'move painting'],
+  door: ['kick door', 'break door', 'burn down door', 'burn door', 'barge down door', 'barge down the door'],
 };
 
 const itemDescrip = {
@@ -225,7 +186,7 @@ const itemDescrip = {
   lantern: '',
   hallwayRoomKey: '',
   trapRoomKey: '',
-  signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\n',
+  signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nDate: Pie Day',
   statue: "partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand",
   northPainting: "It's a beautiful yet gothic oil painting of 3 cats playing poker",
 };
@@ -271,6 +232,7 @@ let player = {
   currentStatus: null,
 };
 //let currentEmot = emotionalLookup[currentEmotionalState]
+
 // Game Function ----------------------------------------------------------------------------------------------------------------------------------------
 startGame();
 
@@ -280,13 +242,13 @@ async function startGame() {
   answer = '';
 
   // Checks input, if yes starts the game logic function
-  while (!startGameInput.yes.includes(sanitizeString(answer))) {
-    answer = await ask('>_ ');
+  while (!validActions.yes.includes(sanitizeString(answer))) {
+    answer = await ask(validActions.prompt);
 
-    if (startGameInput.no.includes(sanitizeString(answer))) {
+    if (validActions.no.includes(sanitizeString(answer))) {
       console.log('Maybe next time?');
       process.exit();
-    } else if (!startGameInput.no.includes(answer) && !startGameInput.yes.includes(answer)) {
+    } else if (!validActions.no.includes(answer) && !validActions.yes.includes(answer)) {
       console.log(`No idea what you\'re trying to do with the prompt: ${answer}.`);
     }
   }
@@ -295,43 +257,43 @@ async function startGame() {
     `\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`
   );
   play();
-  player.currentRoom = 'startRoom';
+  player.currentRoom = roomTable['startRoom'];
   player.currentStatus = playerEmotionalStatus.scared;
   return;
 }
 
 async function play() {
-  answer = await ask('>_ ');
+  answer = await ask(validActions.prompt);
 
   // Checks for invalid user input
-  if (validUserInput(answer)) {
-    console.log('wrong');
+  if (userInputValidCheck(answer) && userInputInvalidCheck(answer) === true) {
+    console.log('dont recognize that');
     play();
   }
 
   // Interacting with the sign
-  if (validItemActions.signByDoor.includes(sanitizeString(answer))) {
-    console.log(`You prompted: ${answer}. \n\nYou walk over to the sign and read it. It states: ${itemDescrip.signByDoor}\n`);
+  if (validActions.signByDoor.includes(sanitizeString(answer))) {
+    console.log(`You prompted: ${answer}. \nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
+    play();
+  } 
+
+  //process to start room door
+  if (validActions.door.includes(sanitizeString(answer))) {
+    if (player.currentRoom.lock === true) {
+      console.log('The door is locked. Our bad. There is a keypad on the handle. \n');
+      play();
+    }
+  }
+
+  //enter a code to get access to the room
+  if (validActions.keyCode.includes(sanitizeString(answer))) {
+    enterRoomState('centerRoom');
+    console.log('Success!  You got in!');
     play();
   }
 
-  //process to start room door
-  if (validRoomActions.door.includes(sanitizeString(answer))) {
-    if (player.currentRoom.lock === true) {
-      console.log('The door is locked. Our bad. Try using a 4 digit code - hint - it may be the best day of the year.  My favorite kind is cherry');
-      play();
-    }
-
-    //enter a code to get access to the room
-    if (answer === '0314') {
-      enterRoomState('centerRoom');
-      console.log('Success!  You got in!');
-      play();
-    }
-  }
-
   //checking inventory
-  if (validPlayerActions.checkInventory.includes(answer)) {
+  if (validActions.checkInventory.includes(answer)) {
     console.log(`Your prompted: ${answer}. \n You have: ${player.playerInventory}`);
     if (player.playerInventory === []) {
       console.log(`You have nothing in your arms.`);
@@ -340,10 +302,10 @@ async function play() {
   }
 
   // Interacting with the Statue
-  if (validItemActions.statue.includes(sanitizeString(answer))) {
+  if (validActions.statue.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.statue}`);
     play();
-  } else if (invalidItemActions.statue.includes(sanitizeString(answer))) {
+  } else if (invalidActions.statue.includes(sanitizeString(answer))) {
     console.log(`Who do you think you are?!  You are not strong enough! Check yo self!`);
     play();
   }
