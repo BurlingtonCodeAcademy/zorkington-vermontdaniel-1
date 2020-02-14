@@ -16,10 +16,10 @@ let answer = '';
 // Room Transition State Machine
 let roomStates = {
   startRoom: { canChangeTo: ['centerRoom'] },
-  centerRoom: { canChangeTo: ['startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom'] },
-  hallwayRoom: { canChangeTo: ['centerRoom', 'finalRoom'] },
-  itemRoom: { canChangeTo: ['centerRoom'] },
-  trapRoom: { canChangeTo: ['centerRoom'] },
+  centerRoom: { canChangeTo: ['startRoom', 'pinkRoom', 'redRoom', 'blueRoom'] },
+  pinkRoom: { canChangeTo: ['centerRoom', 'finalRoom'] },
+  redRoom: { canChangeTo: ['centerRoom'] },
+  blueRoom: { canChangeTo: ['centerRoom'] },
 };
 let currentRoomState = 'startRoom';
 
@@ -128,26 +128,6 @@ class Room {
   }
 }
 
-//list of rooms------------------------------------------------------------------------------------------------------------------------------------------
-
-//connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room('startRoom', 'dark, dingy, smelly room', null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true);
-
-//connects to 4 rooms, no items, is unlocked
-let centerRoom = new Room('centerRoom', '', null, 'startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false);
-
-//connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(itemRoom) to unlock
-let hallwayRoom = new Room('hallwayRoom', '', null, null, null, 'finalRoom', 'centerRoom', ['lantern'], true);
-
-//needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
-let itemRoom = new Room('itemRoom', '', null, 'centerRoom', null, null, null, ['hallwayRoomKey', 'trapRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false);
-
-//connects: centerRoom(east), no items, needs key(itemRoom) to unlock, if entered should console.log losing message && change status to dead
-let trapRoom = new Room('trapRoom', '', null, null, 'centerRoom', null, null, [], true);
-
-//connects: hallwayRoom(north), no items, hallwayRoom puzzle unlocks, if entered console.log victory message, change status to relief
-let finalRoom = new Room('finalRoom', '', null, 'hallwayRoom', null, null, null, [], true);
-
 //list of objects ---------------------------------------------------------------------------------------------------------------------------------------
 const playerEmotionalStatus = {
   dead: 'dead',
@@ -156,11 +136,11 @@ const playerEmotionalStatus = {
 };
 
 const validActions = {
-  signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign'],
+  signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
-  hallwayRoomKey: [],
-  trapRoomKey: [],
+  pinkRoomKey: [],
+  blueRoomKey: [],
   puzzle1: [],
   puzzle2: [],
   puzzle3: [],
@@ -170,13 +150,15 @@ const validActions = {
   yes: ['yes', 'yeah', 'y', 'yes ready'],
   no: ['no', 'n', 'not ready'],
   prompt: ['>_ '],
-  keyCode: ['enter 0314', 'code in 0314', 'key 0314', 'key in 0314', 'code 0314'],
+  keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
+  keyCode: ['0314'],
+  lookAround : ['look around', 'look around room', 'examine the room', 'examine room']
 };
 
 const invalidActions = {
   statue: ['take the statue', 'take statue', 'move the statue', 'move statue', 'break', 'break statue'],
   northPainting: ['take the painting', 'take painting', 'move the painting', 'move painting'],
-  door: ['kick door', 'break door', 'burn down door', 'burn door', 'barge down door', 'barge down the door'],
+  door: ['kick door', 'break door', 'burn down door', 'burn door', 'barge down door', 'barge down the door', 'break down the door', 'kick down the door', 'kick down door', 'break down door'],
 };
 
 const itemDescrip = {
@@ -184,28 +166,51 @@ const itemDescrip = {
   puzzle2: '',
   puzzle3: '',
   lantern: '',
-  hallwayRoomKey: '',
-  trapRoomKey: '',
+  pinkRoomKey: '',
+  blueRoomKey: '',
   signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nDate: Pie Day',
   statue: "partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand",
-  northPainting: "It's a beautiful yet gothic oil painting of 3 cats playing poker",
+  northPainting: "beautiful yet gothic oil painting of 3 cats playing poker",
+  
 };
+
+
+//list of rooms------------------------------------------------------------------------------------------------------------------------------------------
+
+//connects: centerRoom(south), has three items and is locked.
+let startRoom = new Room('startRoom', `dark, dingy, smelly room. On the west wall is a ${itemDescrip.statue}. \nOn the North wall is a ${itemDescrip.northPainting} `, null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true);
+
+//connects to 4 rooms, no items, is unlocked
+let centerRoom = new Room('centerRoom', 'You are in a sterile and cold room that have 3 separate doors - each with a different color - baby blue, pepto bismal pink, and blood red.  If you select correctly, you may get out of here alive.  If you select the wrong room....YOU WILL DIE! ', null, 'startRoom', 'pinkRoom', 'redRoom', 'blueRoom', [], false);
+
+//connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
+let pinkRoom = new Room('pinkRoom', '', null, null, null, 'finalRoom', 'centerRoom', ['lantern'], true);
+
+//needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
+let redRoom = new Room('redRoom', '', null, 'centerRoom', null, null, null, ['pinkRoomKey', 'blueRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false);
+
+//connects: centerRoom(east), no items, needs key(redRoom) to unlock, if entered should console.log losing message && change status to dead
+let blueRoom = new Room('blueRoom', '', null, null, 'centerRoom', null, null, [], true);
+
+//connects: pinkRoom(north), no items, pinkRoom puzzle unlocks, if entered console.log victory message, change status to relief
+let finalRoom = new Room('finalRoom', '', null, 'pinkRoom', null, null, null, [], true);
+
 
 // List of LookupTables ---------------------------------------------------------------------------------------------------------------------------------
 
 const roomTable = {
   startRoom: startRoom,
   centerRoom: centerRoom,
-  hallwayRoom: hallwayRoom,
-  itemRoom: itemRoom,
-  trapRoom: trapRoom,
+  pinkRoom: pinkRoom,
+  redRoom: redRoom,
+  blueRoom: blueRoom,
   finalRoom: finalRoom,
 };
 
 //const mutableItemTable = {
 //  'signByDoor': signByDoor,
-//  'hallwayRoomKey': hallwayRoomKey,
-//  'trapRoomKey': trapRoomKey,
+//  'pinkRoomKey': pinkRoomKey,
+//  'blueRoomKey': blueRoomKey,
 //  'puzzle1': puzzle1,
 //  'puzzle2': puzzle2,
 //  'puzzle3': puzzle3,
@@ -254,7 +259,7 @@ async function startGame() {
   }
   // Start of playable game
   console.log(
-    `\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`
+    `\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it.\nWhat should you do?`
   );
   play();
   player.currentRoom = roomTable['startRoom'];
@@ -265,33 +270,48 @@ async function startGame() {
 async function play() {
   answer = await ask(validActions.prompt);
 
-  // Checks for invalid user input
-  if (userInputValidCheck(answer) && userInputInvalidCheck(answer) === true) {
-    console.log('dont recognize that');
-    play();
+  //// Checks for invalid user input
+  //if (userInputValidCheck(answer) && userInputInvalidCheck(answer) === true) {
+  //  console.log('dont recognize that');
+  //  play();
+  //}
+  
+  if(validActions.lookAround.includes(sanitizeString(answer))){
+    console.log(`You prompted: ${answer}. \n ${currentRoom.description}`)
+    play()
   }
 
   // Interacting with the sign
   if (validActions.signByDoor.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
     play();
-  } 
+  }
 
-  //process to start room door
+  //interacting with the startRoom door
   if (validActions.door.includes(sanitizeString(answer))) {
     if (player.currentRoom.lock === true) {
-      console.log('The door is locked. Our bad. There is a keypad on the handle. \n');
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle. \n`);
+      play();
+    }
+    if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
     }
   }
 
-  //enter a code to get access to the room
-  if (validActions.keyCode.includes(sanitizeString(answer))) {
-    enterRoomState('centerRoom');
-    console.log('Success!  You got in!');
+  //interacting with keypad
+  if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
+    console.log('Please type in the code now:');
     play();
   }
 
+  if (validActions.keyCode.includes(sanitizeString(answer))) {
+    enterRoomState('centerRoom');
+    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\nYou see a ${centerRoom.description}`);
+   
+    play();
+  }
+  
   //checking inventory
   if (validActions.checkInventory.includes(answer)) {
     console.log(`Your prompted: ${answer}. \n You have: ${player.playerInventory}`);
@@ -307,6 +327,15 @@ async function play() {
     play();
   } else if (invalidActions.statue.includes(sanitizeString(answer))) {
     console.log(`Who do you think you are?!  You are not strong enough! Check yo self!`);
+    play();
+  }
+
+  //interacting with the painting
+  if (validActions.northPainting.includes(sanitizeString(answer))) {
+    console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.northPainting}`);
+    play();
+  } else if (invalidActions.northPainting.includes(sanitizeString(answer))) {
+    console.log(`Who do you think you are?!  You can't take that fine piece of art from me! Check yo self!`);
     play();
   }
 }
