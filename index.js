@@ -10,6 +10,7 @@ function ask(questionText) {
 let answer = "";
 
 // List of LookupTables --------------------------------------------------
+
 const roomTable = {
   startRoom: 'startRoom',
   centerRoom: 'centerRoom',
@@ -52,7 +53,6 @@ let roomStates = {
   'itemRoom': { canChangeTo: ['centerRoom'] },
   'trapRoom': { canChangeTo: ['centerRoom'] },
 };
-
 let currentRoomState = "startRoom";
 
 //Emotion Status State Machine
@@ -64,9 +64,12 @@ let playerEmotionalState = {
 let currentEmotionalState = 'scared'
 
 //list of functions-------------------------------------------------
+
+//filler, will check user emotional status
 function checkStatus() {
 }
 
+//Moves from one room to another
 function enterRoomState(newRoomState) {
   let validTransitions = roomStates[currentRoomState].canChangeTo;
 
@@ -74,6 +77,7 @@ function enterRoomState(newRoomState) {
     console.log(`Moving from ${currentRoomState} to ${newRoomState}`)
     currentRoomState = newRoomState;
     console.log(`You are now in ${currentRoomState}`)
+    player.currentRoom = currentRoomState;
     return;
 
   } else {
@@ -81,6 +85,7 @@ function enterRoomState(newRoomState) {
   }
 }
 
+//Sanitizes user input to valid format
 function sanitizeString(string) {
   string = string
     .toString()
@@ -90,7 +95,8 @@ function sanitizeString(string) {
   return string;
 }
 
-function userInputNotValidCheck() {
+// Checks if user input can be used on items
+function userItemInputNotValidCheck() {
   for (let array in validActions) {
     if (array.includes(answer)) {
       return false;
@@ -100,7 +106,8 @@ function userInputNotValidCheck() {
   }
 }
 
-function userInputNotInValidCheck() {
+//checks if user input cannot be used on items
+function userItemInputNotInValidCheck() {
   for (let array in invalidActions) {
     if (array.includes(answer)) {
       return false;
@@ -109,6 +116,8 @@ function userInputNotInValidCheck() {
     }
   }
 }
+
+//checks if user input can be used on rooms
 function userRoomInputNotValidCheck() {
   for (let array in validRoomActions) {
     if (array.includes(answer)) {
@@ -118,6 +127,8 @@ function userRoomInputNotValidCheck() {
     }
   }
 }
+
+//checks if user input cannot be used on rooms
 function userRoomInputNotInValidCheck() {
   for (let array in invalidRoomActions) {
     if (array.includes(answer)) {
@@ -128,8 +139,8 @@ function userRoomInputNotInValidCheck() {
   }
 }
 
-
 let currentEmot = emotionalLookup[currentEmotionalState]
+//Changes player emotional state
 function changeEmotion(change) {
   if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
     console.log("Changing from state: " + currentEmotionalState)
@@ -156,18 +167,18 @@ class Room {
     this.roomInventory = roomInventory || [];
     this.lock = lock;
     //Functions
-    this.move = function (room) {
-      if(this.lock !== true){
-        console.log('The door is locked. Our bad. Try using a 4 digit code - hint - it may be the best day of the year.  My favorite kind is cherry')
-      }
-      //issues are below
-      else if(enterRoomState(room)){
-           return }
-       else { 
-         player.currentRoom = room;
-         console.log('The door is unlocked, please come in')
-       }
-    }
+    //this.move = function (room) {
+    //  if(this.lock !== true){
+    //    console.log('The door is locked. Our bad. Try using a 4 digit code - hint - it may be the best day of the year.  My favorite kind is cherry')
+    //  }
+    //  //issues are below
+    //  else if(enterRoomState(room)){
+    //       return }
+    //   else { 
+    //     player.currentRoom = room;
+    //     console.log('The door is unlocked, please come in')
+    //   }
+   // }
     this.take = function (room) {
 
     }
@@ -190,7 +201,7 @@ class Room {
 //list of rooms-----------------------------------------------------
 
 //connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room('startRoom', 'dark, dingy, smelly room', null, null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], false)
+let startRoom = new Room('startRoom', 'dark, dingy, smelly room', null, null, null, 'centerRoom', null, ['statue', 'northPainting', 'signByDoor'], true)
 
 //connects to 4 rooms, no items, is unlocked
 let centerRoom = new Room('centerRoom', '', null, 'startRoom', 'hallwayRoom', 'itemRoom', 'trapRoom', [], false)
@@ -215,7 +226,7 @@ let playerEmotionalStatus = {
   scared: 'scared',
 }
 
-const validActions = {
+const validItemActions = {
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
@@ -227,7 +238,10 @@ const validActions = {
   lantern: []
 }
 
- 
+const invalidItemActions = {
+  statue: ['take the statue', 'take statue', 'move the statue', 'move statue', 'break', 'break statue'],
+  northPainting: ['take the painting', 'take painting', 'move the painting', 'move painting',],
+}
 
 const validRoomActions = {
   door: ['open door', 'access door', 'enter door', 'unlock door', 'enter code', 'put in code', 'code']
@@ -235,11 +249,6 @@ const validRoomActions = {
 
 const invalidRoomActions = {
   door: ['kick door', 'break door', 'burn down door', 'burn door', 'barge down door', 'barge down the door']
-}
-
-const invalidActions = {
-  statue: ['take the statue', 'take statue', 'move the statue', 'move statue', 'break', 'break statue'],
-  northPainting: ['take the painting', 'take painting', 'move the painting', 'move painting',],
 }
 
 const itemDescrip = {
@@ -255,6 +264,8 @@ const itemDescrip = {
 
 
 }
+
+
 //Player Information------------------------------------------------
 let player = {
   playerInventory: [],
@@ -269,45 +280,43 @@ async function start() {
   console.log(`\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it, as well as multiple items on the other walls. \nWhat should you do?`)
 
   // Game setup
-  player.currentRoom = startRoom;
+  player.currentRoom = 'startRoom';
   player.currentStatus = playerEmotionalStatus.scared;
   answer = await ask('>_ ')
 
   while (answer !== 'exit') {
 
-
-
     // Interacting with the sign
-    if (validActions.signByDoor.includes(sanitizeString(answer))) {
+    if (validItemActions.signByDoor.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}. \n\nYou walk over to the sign and read it. It states: ${itemDescrip.signByDoor}\n`)
       answer = await ask('>_ ');
     }
     //process to start room door
     if (validRoomActions.door.includes(sanitizeString(answer))){
-      startRoom.move('centerRoom')
+      
+      if (player.currentRoom.lock === true)
+      console.log('The door is locked. Our bad. Try using a 4 digit code - hint - it may be the best day of the year.  My favorite kind is cherry')
       answer = await ask('>_');
       //enter a code to get access to the room
       if (answer === '0314'){
-        centerRoom.move('centerRoom')
+        enterRoomState('centerRoom')
         console.log('Success!  You got in!')
         answer = await ask('>_')
-        
-
       }
     }
+
     // Interacting with the Statue
-    if (validActions.statue.includes(sanitizeString(answer))) {
+    if (validItemActions.statue.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.statue}`)
       answer = await ask('>_ ');
     }
-    else if (invalidActions.statue.includes(sanitizeString(answer))) {
+    else if (invalidItemActions.statue.includes(sanitizeString(answer))) {
       console.log(`Who do you think you are?!  You are not strong enough! Check yo self!`)
       answer = await ask('>_ ');
     }
 
-
     // Checks for invalid user input
-    if (userInputNotValidCheck(answer) && userInputNotInValidCheck(answer) && userRoomInputNotValidCheck(answer) && userRoomInputNotInValidCheck(answer)){
+    if (userItemInputNotValidCheck(answer) && userItemInputNotInValidCheck(answer) && userRoomInputNotValidCheck(answer) && userRoomInputNotInValidCheck(answer)){
       
       console.log(`I dont recognize the input ${answer}.`)
       answer = await ask('>_ ')
