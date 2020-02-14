@@ -305,12 +305,15 @@ async function startGame() {
 
 async function play() {
   let answer = await ask('>_ ');
-  console.log(answer);
+
   // Checks for invalid user input
   if (userInputValidCheck(answer) && userInputInvalidCheck(answer)) {
     console.log('dont recognize that');
     play();
-  } else if (validActions.lookAround.includes(sanitizeString(answer))) {
+  } 
+  
+  //Look around the room
+  else if (validActions.lookAround.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n ${currentRoom.description}`);
     play();
   }
@@ -323,10 +326,12 @@ async function play() {
 
   //interacting with the startRoom door
   else if (validActions.door.includes(sanitizeString(answer))) {
+    //if room is locked
     if (player.currentRoom.lock === true) {
       console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle. \n`);
       play();
     }
+    //if player tries to break down the door
     if (invalidActions.door.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
@@ -337,10 +342,12 @@ async function play() {
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
     play();
-  } else if (validActions.keyCode.includes(sanitizeString(answer))) {
+  } 
+  
+  //correct code for keypad
+  else if (validActions.keyCode.includes(sanitizeString(answer))) {
     enterRoomState('centerRoom');
     console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\nYou see a ${centerRoom.description}`);
-
     play();
   }
 
