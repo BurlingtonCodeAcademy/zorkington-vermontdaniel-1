@@ -73,12 +73,12 @@ function userInputValidCheck() {
 }
 
 //checks if user input cannot be used on items
-function userItemInputNotInValidCheck() {
-  for (let array in invalidItemActions) {
+function userInputInvalidCheck() {
+  for (let array in invalidActions) {
     if (array.includes(answer)) {
-      return true;
-    } else {
       return false;
+    } else {
+      return true;
     }
   }
 }
@@ -266,11 +266,9 @@ startGame();
 async function startGame() {
   //Start up message
   console.log(`\nWelcome to our awesome game! are you ready to live? Yes? or maybe no?`);
-  answer = '';
+  let answer = await ask('>_');
 
   // Checks input, if yes starts the game logic function
-  while (!validActions.yes.includes(sanitizeString(answer))) {
-    answer = await ask(validActions.prompt);
 
     if (validActions.no.includes(sanitizeString(answer))) {
       console.log('Maybe next time?');
@@ -278,39 +276,40 @@ async function startGame() {
     } else if (!validActions.no.includes(answer) && !validActions.yes.includes(answer)) {
       console.log(`No idea what you\'re trying to do with the prompt: ${answer}.`);
     }
-  }
+  
   // Start of playable game
   console.log(
     `\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it.\nWhat should you do?`
   );
-  play();
+
   player.currentRoom = roomTable['startRoom'];
   player.currentStatus = playerEmotionalStatus.scared;
-  return;
+  play();
 }
 
+
 async function play() {
-  answer = await ask(validActions.prompt);
-//
-  //// Checks for invalid user input
-  //if (userInputValidCheck(answer) && userInputInvalidCheck(answer) === true) {
-  //  console.log('dont recognize that');
-  //  play();
-  //}
+  let answer = await ask('>_ ');
+  console.log(answer)
+  // Checks for invalid user input
+  if (userInputValidCheck(answer) && userInputInvalidCheck(answer)) {
+    console.log('dont recognize that');
+    play();
+  }
   
-  if(validActions.lookAround.includes(sanitizeString(answer))){
+  else if(validActions.lookAround.includes(sanitizeString(answer))){
     console.log(`You prompted: ${answer}. \n ${currentRoom.description}`)
     play()
   }
 
   // Interacting with the sign
-  if (validActions.signByDoor.includes(sanitizeString(answer))) {
+  else if (validActions.signByDoor.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
     play();
   }
 
   //interacting with the startRoom door
-  if (validActions.door.includes(sanitizeString(answer))) {
+  else if (validActions.door.includes(sanitizeString(answer))) {
     if (player.currentRoom.lock === true) {
       console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle. \n`);
       play();
@@ -322,12 +321,12 @@ async function play() {
   }
 
   //interacting with keypad
-  if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
+  else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
     play();
   }
 
-  if (validActions.keyCode.includes(sanitizeString(answer))) {
+  else if (validActions.keyCode.includes(sanitizeString(answer))) {
     enterRoomState('centerRoom');
     console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\nYou see a ${centerRoom.description}`);
    
@@ -335,7 +334,7 @@ async function play() {
   }
   
   //checking inventory
-  if (validActions.checkInventory.includes(answer)) {
+  else if (validActions.checkInventory.includes(answer)) {
     console.log(`Your prompted: ${answer}. \n You have: ${player.playerInventory}`);
     if (player.playerInventory === []) {
       console.log(`You have nothing in your arms.`);
@@ -344,7 +343,7 @@ async function play() {
   }
 
   // Interacting with the Statue
-  if (validActions.statue.includes(sanitizeString(answer))) {
+  else if (validActions.statue.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.statue}`);
     play();
   } else if (invalidActions.statue.includes(sanitizeString(answer))) {
@@ -353,12 +352,17 @@ async function play() {
   }
 
   //interacting with the painting
-  if (validActions.northPainting.includes(sanitizeString(answer))) {
+  else if (validActions.northPainting.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.northPainting}`);
     play();
   } else if (invalidActions.northPainting.includes(sanitizeString(answer))) {
     console.log(`Who do you think you are?!  You can't take that fine piece of art from me! Check yo self!`);
     play();
+  }
+
+  else{
+    console.log('I dont recognize')
+    play()
   }
 }
 
