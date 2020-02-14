@@ -157,16 +157,16 @@ class Room {
     this.lock = lock;
     //Functions
     this.move = function (room) {
-      if(this.lock === true){
-        console.log('The door is locked. Our bad.')
+      if(this.lock !== true){
+        console.log('The door is locked. Our bad. Try using a 4 digit code - hint - it may be the best day of the year.  My favorite kind is cherry')
       }
       //issues are below
       else if(enterRoomState(room)){
            return }
-        else { 
-          player.currentRoom = room;
-          console.log('The door is unlocked, please come in')
-        }
+       else { 
+         player.currentRoom = room;
+         console.log('The door is unlocked, please come in')
+       }
     }
     this.take = function (room) {
 
@@ -227,8 +227,10 @@ const validActions = {
   lantern: []
 }
 
+ 
+
 const validRoomActions = {
-  door: ['open door', 'access door', 'enter door']
+  door: ['open door', 'access door', 'enter door', 'unlock door', 'enter code', 'put in code', 'code']
 }
 
 const invalidRoomActions = {
@@ -283,7 +285,15 @@ async function start() {
     //process to start room door
     if (validRoomActions.door.includes(sanitizeString(answer))){
       startRoom.move('centerRoom')
-      
+      answer = await ask('>_');
+      //enter a code to get access to the room
+      if (answer === '0314'){
+        centerRoom.move('centerRoom')
+        console.log('Success!  You got in!')
+        answer = await ask('>_')
+        
+
+      }
     }
     // Interacting with the Statue
     if (validActions.statue.includes(sanitizeString(answer))) {
@@ -295,8 +305,10 @@ async function start() {
       answer = await ask('>_ ');
     }
 
+
     // Checks for invalid user input
     if (userInputNotValidCheck(answer) && userInputNotInValidCheck(answer) && userRoomInputNotValidCheck(answer) && userRoomInputNotInValidCheck(answer)){
+      
       console.log(`I dont recognize the input ${answer}.`)
       answer = await ask('>_ ')
     }
@@ -310,6 +322,6 @@ async function start() {
 
 
   //if user hits exit at any point
-  //console.log("Come on, don't be scared, figure out how to get out of the room!")
-   //process.exit()
+  console.log("Come on, don't be scared, figure out how to get out of the room!")
+  process.exit()
 }
