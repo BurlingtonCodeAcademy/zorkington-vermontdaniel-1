@@ -138,6 +138,7 @@ const playerEmotionalStatus = {
 const validActions = {
   // startRoom items
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
+  takeSignByDoor: ['take sign', 'take the sign', 'remove the sign', 'remove sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
   pinkRoomKey: [],
