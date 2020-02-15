@@ -33,8 +33,8 @@ let currentEmotionalState = 'scared';
 
 //list of functions--------------------------------------------------------------------------------------------------------------------------------------
 
-//filler, will check user emotional status
-function checkStatus() {}
+//Take item from room, move to player inventory
+
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -61,27 +61,27 @@ function sanitizeString(string) {
   return string;
 }
 
-// Checks if user input can be used on items
-function userInputValidCheck() {
-  for (let array in validActions) {
-    if (array.includes(answer)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
+// Checks if user input can be used on items, might need
+// function userInputValidCheck() {
+//   for (let array in validActions) {
+//     if (array.includes(answer)) {
+//       return false;
+//     } else {
+//       return true;
+//     }
+//   }
+// }
 
-//checks if user input cannot be used on items
-function userInputInvalidCheck() {
-  for (let array in invalidActions) {
-    if (array.includes(answer)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
+//checks if user input cannot be used on items, might need 
+// function userInputInvalidCheck() {
+//   for (let array in invalidActions) {
+//     if (array.includes(answer)) {
+//       return false;
+//     } else {
+//       return true;
+//     }
+//   }
+// }
 
 //Changes player emotional state
 function changeEmotion(change) {
@@ -328,7 +328,7 @@ async function play() {
 
   //Look around the room
   else if (validActions.lookAround.includes(sanitizeString(answer))) {
-    console.log(`You prompted: ${answer}. \n${player.currentRoom.description}`);
+    console.log(`You prompted: ${answer}. \nYou are in: ${player.currentRoom.description}`);
     play();
   }
 
@@ -357,12 +357,15 @@ async function play() {
     console.log(`You prompted: ${answer}. \nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
     play();
   }
+  else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
+
+  }
 
   //interacting with the startRoom door ------------------------------------------------------------------------------------------------------------------
   else if (validActions.door.includes(sanitizeString(answer))) {
     //if room is locked
     if (player.currentRoom.lock === true) {
-      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle. \n`);
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle.`);
       play();
     }
     //if player tries to break down the door
@@ -374,15 +377,19 @@ async function play() {
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
-    play();
-  }
-
+    answer = await ask('>_ ')
   //correct code for keypad
-  else if (validActions.keyCode.includes(sanitizeString(answer))) {
+  if (validActions.keyCode.includes(sanitizeString(answer))) {
     enterRoomState('centerRoom');
-    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\n ${centerRoom.description}`);
+    startRoom.lock = false;
+    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\n ${centerRoom.description}\n`);
     play();
   }
+  //Incorrect code for keypad 
+  else {
+    console.log(`You prompted: ${answer}.\nFailure! Way to go! Way to use that brain power! What are you going to do now?`)
+    play()
+  }}
 
   //selecting colored door from centerRoom ---------------------------------------------------------------------------------------------------------------
 
@@ -400,9 +407,9 @@ async function play() {
       play();
     }
 
-    //enterRoomState('pinkRoom');
-    //console.log(`You prompted: ${answer}.\n${pinkRoom.description}`);
-    //play();
+    enterRoomState('pinkRoom');
+    console.log(`You prompted: ${answer}.\n${pinkRoom.description}`);
+    play();
   }
 
   //Red door
@@ -417,9 +424,9 @@ async function play() {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
     }
-    //enterRoomState('redRoom');
-    //console.log(`You prompted: ${answer}.\n  ${redRoom.description}`);
-    //play();
+    enterRoomState('redRoom');
+    console.log(`You prompted: ${answer}.\n  ${redRoom.description}`);
+    play();
   }
 
   //Blue door
@@ -434,9 +441,9 @@ async function play() {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
     }
-    //enterRoomState('blueRoom');
-    //console.log(`You prompted: ${answer}.\n  ${blueRoom.description}`);
-    //process.exit();
+    enterRoomState('blueRoom');
+    console.log(`You prompted: ${answer}.\n  ${blueRoom.description}`);
+    process.exit();
   }
 
     // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
