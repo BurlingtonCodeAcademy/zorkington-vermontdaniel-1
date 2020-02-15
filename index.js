@@ -34,7 +34,7 @@ let currentEmotionalState = 'scared';
 //list of functions--------------------------------------------------------------------------------------------------------------------------------------
 
 //filler, will check user emotional status
-function checkStatus() {}
+function checkStatus() { }
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -143,10 +143,10 @@ class Room {
     //     console.log('The door is unlocked, please come in')
     //   }
     // }
-    this.take = function(room) {};
-    this.drop = function(room) {};
-    this.checkInventory = function(room) {};
-    this.examineRoom = function(room) {};
+    this.take = function (room) { };
+    this.drop = function (room) { };
+    this.checkInventory = function (room) { };
+    this.examineRoom = function (room) { };
   }
 }
 
@@ -175,6 +175,9 @@ const validActions = {
   keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
   keyCode: ['0314'],
   lookAround: ['look around', 'look around room', 'examine the room', 'examine room'],
+  selectPinkDoor: ['open pink door', 'open pink', 'pink door', 'go in pink door', 'enter pink room', 'go in pink'],
+  selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red'],
+  selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue']
 };
 
 const invalidActions = {
@@ -212,7 +215,7 @@ let startRoom = new Room(
 //connects to 4 rooms, no items, is unlocked
 let centerRoom = new Room(
   'centerRoom',
-  'You are in a sterile and cold room that have 3 separate doors - each with a different color - baby blue, pepto bismal pink, and blood red.  If you select correctly, you may get out of here alive.  If you select the wrong room....YOU WILL DIE! ',
+  'You are in a sterile and cold room that has 3 separate doors - each with a different color - baby blue, pepto bismal pink, and blood red.  If you select correctly, you may get out of here alive.  If you select the wrong room....YOU WILL DIE! ',
   null,
   'startRoom',
   'pinkRoom',
@@ -223,13 +226,13 @@ let centerRoom = new Room(
 );
 
 //connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
-let pinkRoom = new Room('pinkRoom', '', null, null, null, 'finalRoom', 'centerRoom', ['lantern'], true);
+let pinkRoom = new Room('pinkRoom', 'You are in the pink room, which the look (and smell) of it can give you a stomach ache.  However, you see a note in the middle of the room...', null, null, null, 'finalRoom', 'centerRoom', ['lantern'], true);
 
 //needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
-let redRoom = new Room('redRoom', '', null, 'centerRoom', null, null, null, ['pinkRoomKey', 'blueRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false);
+let redRoom = new Room('redRoom', 'You are in the red room.  There are 2 keys and 3 puzzle pieces (WE NEED MORE INFOR HERE)', null, 'centerRoom', null, null, null, ['pinkRoomKey', 'blueRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'], false);
 
 //connects: centerRoom(east), no items, needs key(redRoom) to unlock, if entered should console.log losing message && change status to dead
-let blueRoom = new Room('blueRoom', '', null, null, 'centerRoom', null, null, [], true);
+let blueRoom = new Room('blueRoom', 'You are in the blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....', null, null, 'centerRoom', null, null, [], true);
 
 //connects: pinkRoom(north), no items, pinkRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let finalRoom = new Room('finalRoom', '', null, 'pinkRoom', null, null, null, [], true);
@@ -291,17 +294,20 @@ async function startGame() {
     player.currentRoom = roomTable['startRoom'];
     player.currentStatus = playerEmotionalStatus.scared;
     play();
-  //If no exits game
+    //If no, exits game
   } else if (validActions.no.includes(sanitizeString(answer))) {
     console.log('Maybe next time?');
     process.exit();
-  //for invalid user input
+
+
+    //checking for invalid user input
   } else if (!validActions.no.includes(answer) && !validActions.yes.includes(answer)) {
     console.log(`No idea what you\'re trying to do with the prompt: ${answer}.`);
     startGame()
   }
 
 }
+
 
 async function play() {
   let answer = await ask('>_ ');
@@ -310,8 +316,8 @@ async function play() {
   if (userInputValidCheck(answer) && userInputInvalidCheck(answer)) {
     console.log('dont recognize that');
     play();
-  } 
-  
+  }
+
   //Look around the room
   else if (validActions.lookAround.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n ${currentRoom.description}`);
@@ -338,23 +344,74 @@ async function play() {
     }
   }
 
+
+
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
     play();
-  } 
-  
+  }
+
   //correct code for keypad
   else if (validActions.keyCode.includes(sanitizeString(answer))) {
     enterRoomState('centerRoom');
-    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\nYou see a ${centerRoom.description}`);
+    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\n ${centerRoom.description}`);
     play();
+  }
+
+  //selecting colored door from centerroom
+  else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    }
+    enterRoomState('pinkRoom');
+    console.log(`You prompted: ${answer}.\n  ${pinkRoom.description}`);
+    play();
+  }
+
+  else if (validActions.selectRedDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    }
+    enterRoomState('redRoom');
+    console.log(`You prompted: ${answer}.\n  ${redRoom.description}`);
+    play();
+  }
+
+  else if (validActions.selectBlueDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    }
+    enterRoomState('blueRoom');
+    console.log(`You prompted: ${answer}.\n  ${blueRoom.description}`);
+    process.exit()
   }
 
   //checking inventory
   else if (validActions.checkInventory.includes(answer)) {
-    console.log(`Your prompted: ${answer}. \n You have: ${player.playerInventory}`);
-    if (player.playerInventory === []) {
+    console.log(`You prompted: ${answer}. \n You have: ${player.playerInventory} items`);
+    if (player.playerInventory === '') {
       console.log(`You have nothing in your arms.`);
     }
     play();
