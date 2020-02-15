@@ -136,6 +136,7 @@ const playerEmotionalStatus = {
 };
 
 const validActions = {
+  // startRoom items
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
@@ -147,13 +148,13 @@ const validActions = {
   lantern: [],
   door: ['open door', 'access door', 'enter door', 'unlock door'],
   checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
-  checkEmotionalStatus: ['s'],
+  checkEmotionalStatus: ['s', 'check status', 'status', 'check emotional status'],
   yes: ['yes', 'yeah', 'y', 'yes ready'],
   no: ['no', 'n', 'not ready'],
   prompt: ['>_ '],
   keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
   keyCode: ['0314'],
-  lookAround: ['look around', 'look around room', 'examine the room', 'examine room'],
+  lookAround: ['look around', 'look around room', 'examine the room', 'examine room', 'l'],
   selectPinkDoor: ['open pink door', 'open pink', 'pink door', 'go in pink door', 'enter pink room', 'go in pink'],
   selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red'],
   selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue'],
@@ -312,20 +313,21 @@ async function play() {
 
   // Player actions --------------------------------------------------------------------------------------------------------------------------------------
 
-  //checking inventory
+  //Check inventory
   if (validActions.checkInventory.includes(answer)) {
     console.log(`You prompted: ${answer}. \nYou have: ${player.playerInventory}`);
+    play();
+  }
+
+  //Check Emotional Status
+  else if (validActions.checkEmotionalStatus.includes(answer)) {
+    console.log(`You prompted: ${answer}. \nYou are: ${player.currentStatus}`);
     play();
   }
 
   //Look around the room
   else if (validActions.lookAround.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n${player.currentRoom.description}`);
-    play();
-  }
-
-  else if (validActions.checkInventory.includes(answer)) {
-    console.log(`You prompted: ${answer}. \nYou have: ${player.playerInventory}`);
     play();
   }
 
@@ -381,7 +383,7 @@ async function play() {
     play();
   }
 
-  //selecting colored door from centerroom ---------------------------------------------------------------------------------------------------------------
+  //selecting colored door from centerRoom ---------------------------------------------------------------------------------------------------------------
 
   //Pink door
   else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
@@ -436,7 +438,7 @@ async function play() {
     //process.exit();
   }
 
-    // Checks for invalid user input -----------------------------------------------------------------------------------------------------------------------
+    // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
     else {
       console.log(`Invaild prompt: ${answer}`);
       play();
