@@ -66,24 +66,19 @@ function sanitizeString(string) {
 
 //For being able to take item
 function takeItem(item) {
-  if (validActions.includes(item)) {
-    console.log(`You are allowed to take ${item}`);
-    playerInventory = item;
-    console.log(`Your current inventory is: ` + playerInventory);
-  } else {
-    console.log(`Nope! Can't take the ${item} with you!`);
-    console.log(`Your current inventory is: ` + playerInventory);
-  }
+  console.log(`You are allowed to ${item}`);
+  let playerInventory = player.playerInventory.push(item);
+  console.log(`Your current inventory is: ` + player.playerInventory);
 }
+
 
 //for being able to drop item
 function dropItem(item) {
-  if (validActions.includes(item)) {
-    console.log(`You just dropped ${item} it like it's hot`);
-    let dropped = playerInventory.splice(playerInventory, 1);
-    console.log(`Your current inventory is: ` + playerInventory)
-  }
+  console.log(`You just dropped ${item} it like it's hot`);
+  let dropped = player.playerInventory.splice(playerInventory, 1);
+  console.log(`Your current inventory is: ` + playerInventory)
 }
+
 
 
 
@@ -327,37 +322,49 @@ async function play() {
   //taking valid items
   else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   } else if (validActions.puzzle1.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   } else if (validActions.puzzle2.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   } else if (validActions.puzzle3.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
     takeItem(answer);
+    play();
   }
-  
+
 
   // //Drop Item in inventory
 
   else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
     dropItem(answer);
+    play();
   }
   else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
     dropItem(answer);
-  }else if (validActions.lantern.includes(sanitizeString(answer))) {
+    play();
+  } else if (validActions.lantern.includes(sanitizeString(answer))) {
     dropItem(answer);
-  }else if (validActions.puzzle1.includes(sanitizeString(answer))) {
+    play();
+  } else if (validActions.puzzle1.includes(sanitizeString(answer))) {
     dropItem(answer);
-  }else if (validActions.puzzle2.includes(sanitizeString(answer))) {
+    play();
+  } else if (validActions.puzzle2.includes(sanitizeString(answer))) {
     dropItem(answer);
+    play();
   }
   else if (validActions.puzzle3.includes(sanitizeString(answer))) {
     dropItem(answer);
+    play();
   }
-  
+
 
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
