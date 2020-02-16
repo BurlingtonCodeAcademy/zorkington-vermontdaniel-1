@@ -73,15 +73,15 @@ function userInputValidCheck() {
 
 //For being able to take item
 function takeItem(item) {
-  if (validActions.includes(item)){
-    console.log( `You are allowed to take ${item}`);
+  if (validActions.includes(item)) {
+    console.log(`You are allowed to take ${item}`);
     playerInventory = item;
     console.log(`Your current inventory is: ` + playerInventory)
-      } else {
-        console.log(`Nope! Can't take the ${item} with you!`)
-        console.log(`Your current inventory is: ` + playerInventory)
-      }
-    }
+  } else {
+    console.log(`Nope! Can't take the ${item} with you!`)
+    console.log(`Your current inventory is: ` + playerInventory)
+  }
+}
 
 
 
@@ -177,10 +177,10 @@ class Room {
     //     console.log('The door is unlocked, please come in')
     //   }
     // }
-    this.take = function(room) {};
-    this.drop = function(room) {};
-    this.checkInventory = function(room) {};
-    this.examineRoom = function(room) {};
+    this.take = function (room) { };
+    this.drop = function (room) { };
+    this.checkInventory = function (room) { };
+    this.examineRoom = function (room) { };
   }
 }
 
@@ -197,12 +197,12 @@ const validActions = {
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
   pinkRoomKey: ['take key', 'my key now', 'key is mine'],
   blueRoomKey: ['take key', 'i want key', 'taking key'],
-  puzzle1: [],
-  puzzle2: [],
-  puzzle3: [],
+  puzzle1: ['pick up first puzzle piece', 'pick up 1 puzzle piece', 'pick up first puzzle', 'grab 1 puzzle piece', 'take puzzle 1'],
+  puzzle2: ['pick up second puzzle piece', 'pick up 2 puzzle piece', 'pick up second puzzle', 'grab 2 puzzle piece', 'take puzzle 2'],
+  puzzle3: ['pick up third puzzle piece', 'pick up 3 puzzle piece', 'pick up third puzzle', 'grab 3 puzzle piece', 'take puzzle 3'],
   lantern: ['take lantern', 'steal lantern', 'grab lantern', 'my lantern'],
   door: ['open door', 'access door', 'enter door', 'unlock door', 'enter code', 'put in code', 'code'],
-  
+
   //Valid Player User Input
   checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
   checkEmotionalStatus: ['s', 'check status', 'status', 'check emotional status'],
@@ -296,7 +296,7 @@ let pinkRoom = new Room(
 //needs better name, connects: greyRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let redRoom = new Room(
   'redRoom',
-  'You are in the red room.  There are 2 keys and 3 puzzle pieces (WE NEED MORE INFOR HERE)',
+  'You are in the red room.  There are 2 keys and 3 puzzle pieces.  One key will get you through to the end, the other will take you to your end.  You will need to pick up the puzzle pieces one at a time and bring it into the next room in order to use them to solve your way to get out of here alive.',
   null,
   'greyRoom',
   null,
@@ -323,15 +323,15 @@ const roomTable = {
   finalRoom: finalRoom,
 };
 
-const mutableItemTable = {
-  'signByDoor': signByDoor,
-  'pinkRoomKey': pinkRoomKey,
-  'blueRoomKey': blueRoomKey,
-  'puzzle1': puzzle1,
-  'puzzle2': puzzle2,
-  'puzzle3': puzzle3,
-  'lantern': lantern
-}
+// const mutableItemTable = {
+//   signByDoor: signByDoor,
+//   pinkRoomKey: pinkRoomKey,
+//   blueRoomKey: blueRoomKey,
+//   puzzle1: puzzle1,
+//   puzzle2: puzzle2,
+//   puzzle3: puzzle3,
+//   lantern: lantern
+// }
 
 //const unmutableItemTable = {
 //  'statue': statue,
@@ -446,14 +446,26 @@ async function play() {
   }
 
   //taking valid items
-  else if (validActions.pinkRoomKey.includes(sanitizeString(answer))){
-    function takeItem(answer)
+  else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
+    takeItem(answer)
   }
 
-  else if (validActions.blueRoomKey.includes(sanitizeString(answer))){
-    function takeItem(answer)
+  else if (validActions.puzzle1.includes(sanitizeString(answer))) {
+    takeItem(answer)
   }
-  
+  else if (validActions.puzzle2.includes(sanitizeString(answer))) {
+    takeItem(answer)
+  }
+  else if (validActions.puzzle3.includes(sanitizeString(answer))) {
+    takeItem(answer)
+  }
+
+  else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
+    takeItem(answer)
+  }
+
+
+
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
