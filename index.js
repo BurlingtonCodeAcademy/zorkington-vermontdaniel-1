@@ -15,13 +15,13 @@ let answer = '';
 
 // Room Transition State Machine
 let roomStates = {
-  startRoom: { canChangeTo: ['centerRoom'] },
-  centerRoom: { canChangeTo: ['startRoom', 'pinkRoom', 'redRoom', 'blueRoom'] },
-  pinkRoom: { canChangeTo: ['centerRoom', 'finalRoom'] },
-  redRoom: { canChangeTo: ['centerRoom'] },
-  blueRoom: { canChangeTo: ['centerRoom'] },
+  yellowRoom: { canChangeTo: ['greyRoom'] },
+  greyRoom: { canChangeTo: ['yellowRoom', 'pinkRoom', 'redRoom', 'blueRoom'] },
+  pinkRoom: { canChangeTo: ['greyRoom', 'finalRoom'] },
+  redRoom: { canChangeTo: ['greyRoom'] },
+  blueRoom: { canChangeTo: ['greyRoom'] },
 };
-let currentRoomState = 'startRoom';
+let currentRoomState = 'yellowRoom';
 
 //Emotion Status State Machine
 let playerEmotionalState = {
@@ -34,7 +34,6 @@ let currentEmotionalState = 'scared';
 //list of functions--------------------------------------------------------------------------------------------------------------------------------------
 
 //Take item from room, move to player inventory
-
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -72,7 +71,7 @@ function sanitizeString(string) {
 //   }
 // }
 
-//checks if user input cannot be used on items, might need 
+//checks if user input cannot be used on items, might need
 // function userInputInvalidCheck() {
 //   for (let array in invalidActions) {
 //     if (array.includes(answer)) {
@@ -136,29 +135,36 @@ const playerEmotionalStatus = {
 };
 
 const validActions = {
-  // startRoom items
+  //Valid Player User Input
+  checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
+  checkEmotionalStatus: ['s', 'check status', 'status', 'check emotional status'],
+  yes: ['yes', 'yeah', 'y', 'yes ready'],
+  no: ['no', 'n', 'not ready'],
+  prompt: ['>_ '],
+  lookAround: ['look around', 'look around room', 'examine the room', 'examine room', 'l'],
+
+  // yellowRoom user inputs
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
   takeSignByDoor: ['take sign', 'take the sign', 'remove the sign', 'remove sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
+  keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
+  keyCode: ['0314'],
+
+  //Valid Door User Input
+  selectPinkDoor: ['open pink door', 'open pink', 'pink door', 'go in pink door', 'enter pink room', 'go in pink'],
+  selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red'],
+  selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue'],
+  selectGreyDoor: ['open grey door', 'open grey', 'grey door', 'go in grey door', 'enter grey room', 'go in grey'],
+  selectYellowDoor: ['open yellow door', 'open yellow', 'yellow door', 'go in yellow door', 'enter yellow room', 'go in yellow'],
+
+  //Still organizing these
   pinkRoomKey: [],
   blueRoomKey: [],
   puzzle1: [],
   puzzle2: [],
   puzzle3: [],
   lantern: [],
-  door: ['open door', 'access door', 'enter door', 'unlock door'],
-  checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
-  checkEmotionalStatus: ['s', 'check status', 'status', 'check emotional status'],
-  yes: ['yes', 'yeah', 'y', 'yes ready'],
-  no: ['no', 'n', 'not ready'],
-  prompt: ['>_ '],
-  keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
-  keyCode: ['0314'],
-  lookAround: ['look around', 'look around room', 'examine the room', 'examine room', 'l'],
-  selectPinkDoor: ['open pink door', 'open pink', 'pink door', 'go in pink door', 'enter pink room', 'go in pink'],
-  selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red'],
-  selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue'],
 };
 
 const invalidActions = {
@@ -179,27 +185,26 @@ const itemDescrip = {
   northPainting: 'beautiful yet gothic oil painting of 3 cats playing poker.',
 };
 
-
 //list of rooms------------------------------------------------------------------------------------------------------------------------------------------
 
-//connects: centerRoom(south), has three items and is locked.
-let startRoom = new Room(
-  'startRoom',
-  `A dark, dingy, smelly room. On the west wall is a ${itemDescrip.statue}. \nOn the North wall is a ${itemDescrip.northPainting} `,
+//connects: greyRoom(south), has three items and is locked.
+let yellowRoom = new Room(
+  'yellowRoom',
+  `A dirty yellow, dark, dingy, smelly room. Against one the walls is a ${itemDescrip.statue}. \nOn another wall is a ${itemDescrip.northPainting}. There is a single grey door.\n`,
   null,
   null,
-  'centerRoom',
+  'greyRoom',
   null,
   ['statue', 'northPainting', 'signByDoor'],
   true
 );
 
 //connects to 4 rooms, no items, is unlocked
-let centerRoom = new Room(
-  'centerRoom',
-  'You are in a sterile and cold room that has 3 separate doors - each with a different color - baby blue, pepto bismal pink, and blood red.  If you select correctly, you may get out of here alive.  If you select the wrong room....YOU WILL DIE! ',
+let greyRoom = new Room(
+  'greyRoom',
+  'You are in a sterile and cold grey room that has 3 more separate doors - each with a different color - baby blue, pepto bismal pink, and blood red. Looking behind you, you see that the grey door is yellow on this side of it. If you select correctly, you may get out of here alive.  If you select the wrong room....YOU WILL DIE! ',
   null,
-  'startRoom',
+  'yellowRoom',
   'pinkRoom',
   'redRoom',
   'blueRoom',
@@ -207,7 +212,7 @@ let centerRoom = new Room(
   false
 );
 
-//connects: centerRoom(west) and finalRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
+//connects: greyRoom(west) and finalRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
 let pinkRoom = new Room(
   'pinkRoom',
   'You are in the pink room, which the look (and smell) of it can give you a stomach ache.  However, you see a note in the middle of the room...',
@@ -215,17 +220,17 @@ let pinkRoom = new Room(
   null,
   null,
   'finalRoom',
-  'centerRoom',
+  'greyRoom',
   ['lantern'],
   true
 );
 
-//needs better name, connects: centerRoom(north), has 2 keys, and three puzzle pieces, is unlocked
+//needs better name, connects: greyRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let redRoom = new Room(
   'redRoom',
   'You are in the red room.  There are 2 keys and 3 puzzle pieces (WE NEED MORE INFOR HERE)',
   null,
-  'centerRoom',
+  'greyRoom',
   null,
   null,
   null,
@@ -233,8 +238,8 @@ let redRoom = new Room(
   false
 );
 
-//connects: centerRoom(east), no items, needs key(redRoom) to unlock, if entered should console.log losing message && change status to dead
-let blueRoom = new Room('blueRoom', 'You are in the blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....', null, null, 'centerRoom', null, null, [], true);
+//connects: greyRoom(east), no items, needs key(redRoom) to unlock, if entered should console.log losing message && change status to dead
+let blueRoom = new Room('blueRoom', 'You are in the blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....', null, null, 'greyRoom', null, null, [], true);
 
 //connects: pinkRoom(north), no items, pinkRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let finalRoom = new Room('finalRoom', '', null, 'pinkRoom', null, null, null, [], true);
@@ -242,8 +247,8 @@ let finalRoom = new Room('finalRoom', '', null, 'pinkRoom', null, null, null, []
 // List of LookupTables ---------------------------------------------------------------------------------------------------------------------------------
 
 const roomTable = {
-  startRoom: startRoom,
-  centerRoom: centerRoom,
+  yellowRoom: yellowRoom,
+  greyRoom: greyRoom,
   pinkRoom: pinkRoom,
   redRoom: redRoom,
   blueRoom: blueRoom,
@@ -284,7 +289,7 @@ let player = {
 // Game Function ----------------------------------------------------------------------------------------------------------------------------------------
 
 //Start up message
-console.log(`\nWelcome to our awesome game! are you ready to live? Yes? or maybe no?`);
+console.log(`\nWelcome to our awesome game! are you ready to live? Yes? or maybe no?\n\nSome helpful tips: You MUST describe the color of the door you wish to enter.\n`);
 startGame();
 async function startGame() {
   let answer = await ask('>_ ');
@@ -292,9 +297,9 @@ async function startGame() {
   //If yes, starts game
   if (validActions.yes.includes(sanitizeString(answer))) {
     console.log(
-      `\nYou realize you are in a ${startRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it.\nWhat should you do?`
+      `\nYou realize you are in a ${yellowRoom.description}. \nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing a door with a sign on it.\nWhat should you do?`
     );
-    player.currentRoom = roomTable['startRoom'];
+    player.currentRoom = roomTable['yellowRoom'];
     player.currentStatus = playerEmotionalStatus.scared;
     play();
     //If no, exits game
@@ -332,7 +337,7 @@ async function play() {
     play();
   }
 
-  // startRoom -------------------------------------------------------------------------------------------------------------------------------------------
+  // yellowRoom -------------------------------------------------------------------------------------------------------------------------------------------
 
   // Interacting with the Statue
   else if (validActions.statue.includes(sanitizeString(answer))) {
@@ -356,13 +361,11 @@ async function play() {
   else if (validActions.signByDoor.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
     play();
-  }
-  else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
-
+  } else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
   }
 
-  //interacting with the startRoom door ------------------------------------------------------------------------------------------------------------------
-  else if (validActions.door.includes(sanitizeString(answer))) {
+  //interacting with the yellowRoom door : connects to greyRoom ------------------------------------------------------------------------------------------------------------------
+  else if (validActions.selectGreyDoor.includes(sanitizeString(answer))) {
     //if room is locked
     if (player.currentRoom.lock === true) {
       console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle.`);
@@ -377,21 +380,22 @@ async function play() {
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
-    answer = await ask('>_ ')
-  //correct code for keypad
-  if (validActions.keyCode.includes(sanitizeString(answer))) {
-    enterRoomState('centerRoom');
-    startRoom.lock = false;
-    console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\n ${centerRoom.description}\n`);
-    play();
+    answer = await ask('>_ ');
+    //correct code for keypad
+    if (validActions.keyCode.includes(sanitizeString(answer))) {
+      enterRoomState('greyRoom');
+      yellowRoom.lock = false;
+      console.log(`You prompted: ${answer}.\nSuccess! You got in! \n\n ${greyRoom.description}\n`);
+      play();
+    }
+    //Incorrect code for keypad
+    else {
+      console.log(`You prompted: ${answer}.\nFailure! Way to go! Way to use that brain power! What are you going to do now?`);
+      play();
+    }
   }
-  //Incorrect code for keypad 
-  else {
-    console.log(`You prompted: ${answer}.\nFailure! Way to go! Way to use that brain power! What are you going to do now?`)
-    play()
-  }}
 
-  //selecting colored door from centerRoom ---------------------------------------------------------------------------------------------------------------
+  //selecting colored door from greyRoom ---------------------------------------------------------------------------------------------------------------
 
   //Pink door
   else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
@@ -446,11 +450,11 @@ async function play() {
     process.exit();
   }
 
-    // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
-    else {
-      console.log(`Invaild prompt: ${answer}`);
-      play();
-    }
+  // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
+  else {
+    console.log(`Invaild prompt: ${answer}`);
+    play();
+  }
 }
 
 // //if user hits exit at any point
