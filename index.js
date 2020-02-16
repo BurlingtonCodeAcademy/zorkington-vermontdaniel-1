@@ -76,6 +76,18 @@ function takeItem(item) {
   }
 }
 
+//for being able to drop item
+function dropItem(item) {
+  if (validActions.includes(item)) {
+    console.log(`You just dropped ${item} it like it's hot`);
+    let dropped = playerInventory.splice(playerInventory, 1);
+    console.log(`Your current inventory is: ` + playerInventory)
+  }
+}
+
+
+
+
 //Changes player emotional state
 function changeEmotion(change) {
   if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
@@ -109,8 +121,8 @@ const playerEmotionalStatus = {
 
 const validActions = {
   //Valid item user input
-  pinkRoomKey: ['take key', 'my key now', 'key is mine'],
-  blueRoomKey: ['take key', 'i want key', 'taking key'],
+  pinkRoomKey: ['take key', 'my key now', 'key is mine', 'drop pink key', 'throw pink key', 'get rid of pink key'],
+  blueRoomKey: ['take key', 'i want key', 'taking key', 'drop blue key', 'throw blue key', 'get rid of blue key'],
   puzzle1: ['pick up first puzzle piece', 'pick up 1 puzzle piece', 'pick up first puzzle', 'grab 1 puzzle piece', 'take puzzle 1'],
   puzzle2: ['pick up second puzzle piece', 'pick up 2 puzzle piece', 'pick up second puzzle', 'grab 2 puzzle piece', 'take puzzle 2'],
   puzzle3: ['pick up third puzzle piece', 'pick up 3 puzzle piece', 'pick up third puzzle', 'grab 3 puzzle piece', 'take puzzle 3'],
@@ -148,10 +160,10 @@ const invalidActions = {
 };
 
 const itemDescrip = {
-  puzzle1: '',
-  puzzle2: '',
-  puzzle3: '',
-  lantern: '',
+  puzzle1: 'It is a small purple triangle puzzle piece, not heavy, but appears to be made out of wood',
+  puzzle2: 'It is a triangle-shaped orange puzzle piece, not heavy, but appears to be made out of wood',
+  puzzle3: 'It is a green triangle puzzle piece - made of wood and similar size as the other puzzle pieces',
+  lantern: 'An old and not-very-bright lantern that when held close to something, you can barely see.',
   pinkRoomKey: '',
   blueRoomKey: '',
   signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nDate: Pie Day',
@@ -178,7 +190,7 @@ let greyRoom = new Room(
 );
 
 //connects: greyRoom) and goldenRoom, has puzzle, is locked, needs key(redRoom) to unlock
-let pinkRoom = new Room('pinkRoom', 'You are in a pink room, which the look (and smell) of it can give you a stomach ache.  However, you see a note in the middle of the room...\n', ['lantern'], true);
+let pinkRoom = new Room('pinkRoom', 'You are in a pink room, which the look (and smell) of it can give you a stomach ache.  There\'s a small lantern in the corner and then out of the corner of your eye you spot a note in the middle of the room...\n', ['lantern'], true);
 
 //needs better name, connects: greyRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let redRoom = new Room(
@@ -292,7 +304,7 @@ async function play() {
     console.log(`\nYou see a ${itemDescrip.statue}\n`);
     play();
   } else if (invalidActions.statue.includes(sanitizeString(answer))) {
-    console.log(`\nWho do you think you are?!  You are not strong enough! Check yo self!\n`);
+    console.log(`\nWho do you think you are?!  You are not strong enough! You better check yo self!\n`);
     play();
   }
 
@@ -326,6 +338,26 @@ async function play() {
   } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
     takeItem(answer);
   }
+  
+
+  // //Drop Item in inventory
+
+  else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }
+  else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }else if (validActions.lantern.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }else if (validActions.puzzle1.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }else if (validActions.puzzle2.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }
+  else if (validActions.puzzle3.includes(sanitizeString(answer))) {
+    dropItem(answer);
+  }
+  
 
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
@@ -389,7 +421,7 @@ async function play() {
 
   // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
   else {
-    console.log(`\nInvaild prompt: ${answer}\n`);
+    console.log(`\nInvalid prompt: ${answer}\n`);
     play();
   }
 }
