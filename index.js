@@ -17,7 +17,7 @@ let answer = '';
 let roomStates = {
   yellowRoom: { canChangeTo: ['greyRoom'] },
   greyRoom: { canChangeTo: ['yellowRoom', 'pinkRoom', 'redRoom', 'blueRoom'] },
-  pinkRoom: { canChangeTo: ['greyRoom', 'finalRoom'] },
+  pinkRoom: { canChangeTo: ['greyRoom', 'goldenRoom'] },
   redRoom: { canChangeTo: ['greyRoom'] },
   blueRoom: { canChangeTo: ['greyRoom'] },
 };
@@ -60,17 +60,6 @@ function sanitizeString(string) {
   return string;
 }
 
-// Checks if user input can be used on items
-function userInputValidCheck() {
-  for (let array in validActions) {
-    if (array.includes(answer)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-}
-
 //For being able to take item
 function takeItem(item) {
   if (validActions.includes(item)) {
@@ -104,19 +93,13 @@ function userRoomInputNotValidCheck() {
     } else {
       return true;
     }
+    console.log(`Your current inventory is: ` + playerInventory);
+  } else {
+    console.log(`Nope! Can't take the ${item} with you!`);
+    console.log(`Your current inventory is: ` + playerInventory);
   }
 }
 
-//checks if user input cannot be used on rooms
-function userRoomInputNotInValidCheck() {
-  for (let array in invalidRoomActions) {
-    if (array.includes(answer)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
 // Checks if user input can be used on items, might need
 // function userInputValidCheck() {
 //   for (let array in validActions) {
@@ -225,6 +208,7 @@ const validActions = {
   selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue'],
   selectGreyDoor: ['open grey door', 'open grey', 'grey door', 'go in grey door', 'enter grey room', 'go in grey'],
   selectYellowDoor: ['open yellow door', 'open yellow', 'yellow door', 'go in yellow door', 'enter yellow room', 'go in yellow'],
+  selectGoldenDoor: ['open golden door', 'open golden', 'golden door', 'go in golden door', 'enter golden room', 'go in golden'],
 
   //Still organizing these
   pinkRoomKey: [],
@@ -258,7 +242,7 @@ const itemDescrip = {
 //connects: greyRoom(south), has three items and is locked.
 let yellowRoom = new Room(
   'yellowRoom',
-  `A dirty yellow, dark, dingy, smelly room. Against one the walls is a ${itemDescrip.statue}. \nOn another wall is a ${itemDescrip.northPainting}. There is a single grey door.\n`,
+  `A dirty yellow, dark, dingy, smelly room. Against one of the walls is a ${itemDescrip.statue}\nOn another wall is a ${itemDescrip.northPainting}\nThere is a single grey door.\n`,
   null,
   null,
   'greyRoom',
@@ -280,14 +264,14 @@ let greyRoom = new Room(
   false
 );
 
-//connects: greyRoom(west) and finalRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
+//connects: greyRoom(west) and goldenRoom(south), has puzzle, is locked, needs key(redRoom) to unlock
 let pinkRoom = new Room(
   'pinkRoom',
   'You are in the pink room, which the look (and smell) of it can give you a stomach ache.  However, you see a note in the middle of the room...',
   null,
   null,
   null,
-  'finalRoom',
+  'goldenRoom',
   'greyRoom',
   ['lantern'],
   true
@@ -310,7 +294,7 @@ let redRoom = new Room(
 let blueRoom = new Room('blueRoom', 'You are in the blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....', null, null, 'greyRoom', null, null, [], true);
 
 //connects: pinkRoom(north), no items, pinkRoom puzzle unlocks, if entered console.log victory message, change status to relief
-let finalRoom = new Room('finalRoom', '', null, 'pinkRoom', null, null, null, [], true);
+let goldenRoom = new Room('goldenRoom', 'no description yet', null, 'pinkRoom', null, null, null, [], true);
 
 // List of LookupTables ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -320,7 +304,7 @@ const roomTable = {
   pinkRoom: pinkRoom,
   redRoom: redRoom,
   blueRoom: blueRoom,
-  finalRoom: finalRoom,
+  goldenRoom: goldenRoom,
 };
 
 // const mutableItemTable = {
@@ -332,6 +316,15 @@ const roomTable = {
 //   puzzle3: puzzle3,
 //   lantern: lantern
 // }
+//const mutableItemTable = {
+//  'signByDoor': signByDoor,
+//  'pinkRoomKey': pinkRoomKey,
+//  'blueRoomKey': blueRoomKey,
+//  'puzzle1': puzzle1,
+//  'puzzle2': puzzle2,
+//  'puzzle3': puzzle3,
+//  'lantern': lantern
+//}
 
 //const unmutableItemTable = {
 //  'statue': statue,
@@ -432,19 +425,6 @@ async function play() {
   } else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
   }
 
-  //interacting with the yellowRoom door : connects to greyRoom ------------------------------------------------------------------------------------------------------------------
-  else if (validActions.selectGreyDoor.includes(sanitizeString(answer))) {
-    //if room is locked
-    if (player.currentRoom.lock === true) {
-      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. There is a keypad on the handle.`);
-      play();
-    }
-    //if player tries to break down the door
-  } else if (invalidActions.door.includes(sanitizeString(answer))) {
-    console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
-    play();
-  }
-
   //taking valid items
   else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
     takeItem(answer)
@@ -466,6 +446,11 @@ async function play() {
 
 
 
+    takeItem(answer);
+  } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
+    takeItem(answer);
+  }
+
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
     console.log('Please type in the code now:');
@@ -486,6 +471,42 @@ async function play() {
 
   //selecting colored door from greyRoom ---------------------------------------------------------------------------------------------------------------
 
+  //Grey door
+  else if (validActions.selectGreyDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    } else {
+      enterRoomState('greyRoom');
+      console.log(`You prompted: ${answer}.\n${greyRoom.description}`);
+      play();
+    }
+  }
+
+  //yellow door
+  else if (validActions.selectYellowDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    } else {
+      enterRoomState('yellowRoom');
+      console.log(`You prompted: ${answer}.\n${yellowRoom.description}`);
+      play();
+    }
+  }
+
   //Pink door
   else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
     //if room is locked
@@ -493,16 +514,15 @@ async function play() {
       console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
       play();
     }
-
     //if player tries to break down the door
-    if (invalidActions.door.includes(sanitizeString(answer))) {
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
+    } else {
+      enterRoomState('pinkRoom');
+      console.log(`You prompted: ${answer}.\n${pinkRoom.description}`);
+      play();
     }
-
-    enterRoomState('pinkRoom');
-    console.log(`You prompted: ${answer}.\n${pinkRoom.description}`);
-    play();
   }
 
   //Red door
@@ -513,13 +533,14 @@ async function play() {
       play();
     }
     //if player tries to break down the door
-    if (invalidActions.door.includes(sanitizeString(answer))) {
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
+    } else {
+      enterRoomState('redRoom');
+      console.log(`You prompted: ${answer}.\n  ${redRoom.description}`);
+      play();
     }
-    enterRoomState('redRoom');
-    console.log(`You prompted: ${answer}.\n  ${redRoom.description}`);
-    play();
   }
 
   //Blue door
@@ -530,13 +551,32 @@ async function play() {
       play();
     }
     //if player tries to break down the door
-    if (invalidActions.door.includes(sanitizeString(answer))) {
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
       console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
       play();
+    } else {
+      enterRoomState('blueRoom');
+      console.log(`You prompted: ${answer}.\n  ${blueRoom.description}`);
+      process.exit();
     }
-    enterRoomState('blueRoom');
-    console.log(`You prompted: ${answer}.\n  ${blueRoom.description}`);
-    process.exit()
+  }
+
+  //Grey door
+  else if (validActions.selectGoldenDoor.includes(sanitizeString(answer))) {
+    //if room is locked
+    if (player.currentRoom.lock === true) {
+      console.log(`You prompted: ${answer}. \nThe door is locked. Our bad. Try using same code as before. \n`);
+      play();
+    }
+    //if player tries to break down the door
+    else if (invalidActions.door.includes(sanitizeString(answer))) {
+      console.log(`You prompted: ${answer}.\nYeah, theres no way you're damaging this door. Ya fool.`);
+      play();
+    } else {
+      enterRoomState('goldenRoom');
+      console.log(`You prompted: ${answer}.\n${goldenRoom.description}`);
+      play();
+    }
   }
 
   //checking inventory
@@ -548,19 +588,6 @@ async function play() {
     play();
   }
 
-
-
-
-  // Interacting with the Statue
-  else if (validActions.statue.includes(sanitizeString(answer))) {
-    console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.statue}`);
-    play();
-  } else if (invalidActions.statue.includes(sanitizeString(answer))) {
-    console.log(`Who do you think you are?!  You are not strong enough! Check yo self!`);
-    play();
-    process.exit();
-  }
-
   // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
   else {
     console.log(`Invaild prompt: ${answer}`);
@@ -568,8 +595,8 @@ async function play() {
   }
 }
 
- //if user hits exit at any point
+//if user hits exit at any point
 // if(answer === 'exit'){
 //    console.log("Come on, don't be scared, figure out how to get out of the room!")
 // process.exit()
-// 
+//
