@@ -72,7 +72,25 @@ function userInputValidCheck() {
   }
 }
 
-//checks if user input cannot be used on items
+//For being able to take item
+function takeItem(item) {
+  if (validActions.includes(item)){
+    console.log( `You are allowed to take ${item}`);
+    playerInventory = item;
+    console.log(`Your current inventory is: ` + playerInventory)
+      } else {
+        console.log(`Nope!  Can't take that with you!`)
+        console.log(`Your current inventory is: ` + playerInventory)
+      }
+    }
+
+
+
+
+
+
+
+      //checks if user input cannot be used on items
 function userInputInvalidCheck() {
   for (let array in invalidActions) {
     if (array.includes(answer)) {
@@ -161,12 +179,12 @@ const validActions = {
   signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
-  pinkRoomKey: [],
-  blueRoomKey: [],
+  pinkRoomKey: ['take key', 'my key now', 'key is mine'],
+  blueRoomKey: ['take key', 'i want key', 'taking key'],
   puzzle1: [],
   puzzle2: [],
   puzzle3: [],
-  lantern: [],
+  lantern: ['take lantern', 'steal lantern', 'grab lantern', 'my lantern'],
   door: ['open door', 'access door', 'enter door', 'unlock door', 'enter code', 'put in code', 'code'],
   checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
   yes: ['yes', 'yeah', 'y', 'yes ready'],
@@ -248,15 +266,15 @@ const roomTable = {
   finalRoom: finalRoom,
 };
 
-//const mutableItemTable = {
-//  'signByDoor': signByDoor,
-//  'pinkRoomKey': pinkRoomKey,
-//  'blueRoomKey': blueRoomKey,
-//  'puzzle1': puzzle1,
-//  'puzzle2': puzzle2,
-//  'puzzle3': puzzle3,
-//  'lantern': lantern
-//}
+const mutableItemTable = {
+  'signByDoor': signByDoor,
+  'pinkRoomKey': pinkRoomKey,
+  'blueRoomKey': blueRoomKey,
+  'puzzle1': puzzle1,
+  'puzzle2': puzzle2,
+  'puzzle3': puzzle3,
+  'lantern': lantern
+}
 
 //const unmutableItemTable = {
 //  'statue': statue,
@@ -417,6 +435,9 @@ async function play() {
     play();
   }
 
+
+
+
   // Interacting with the Statue
   else if (validActions.statue.includes(sanitizeString(answer))) {
     console.log(`You prompted: ${answer}. \n\nYou see a ${itemDescrip.statue}`);
@@ -439,6 +460,8 @@ async function play() {
   }
 }
 
-// //if user hits exit at any point
-// console.log("Come on, don't be scared, figure out how to get out of the room!")
+ //if user hits exit at any point
+// if(answer === 'exit'){
+//    console.log("Come on, don't be scared, figure out how to get out of the room!")
 // process.exit()
+// 
