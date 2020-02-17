@@ -8,9 +8,6 @@ function ask(questionText) {
 }
 
 /*******************************************************************************************************************************************************/
-
-let answer = '';
-
 // State Machines ---------------------------------------------------------------------------------------------------------------------------------------
 
 // Room Transition State Machine
@@ -66,35 +63,32 @@ function sanitizeString(string) {
 
 //For being able to take item
 function takeItem(item) {
-  console.log(`You are allowed to ${item}`);
-  let playerInventory = player.playerInventory.push(item);
-  console.log(`Your current inventory is: ` + player.playerInventory);
+  if (player.currentRoom.roomInventory.includes(item)) {
+    item = currentRoom.roomInventory.find(item);
+    playerInventory = player.playerInventory.push(item);
+    console.log(`Your current inventory is: ` + player.playerInventory);
+  }
 }
-
 
 //for being able to drop item
 function dropItem(item) {
   console.log(`You just dropped ${item} it like it's hot`);
   let dropped = player.playerInventory.splice(playerInventory, 1);
-  console.log(`Your current inventory is: ` + playerInventory)
+  console.log(`Your current inventory is: ` + playerInventory);
 }
-
-
-
-
 
 //Changes player emotional state
-function changeEmotion(change) {
-  if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
-    console.log('Changing from state: ' + currentEmotionalState);
-    currentEmotionalState = change;
-    currentEmot = emotionalLookup[currentEmotionalState];
-    console.log('Current emotional state is: ' + currentEmotionalState);
-  } else {
-    console.log('invalid emotional transition attempted');
-    console.log('Current emotional state is: ' + currentEmotionalState);
-  }
-}
+//function changeEmotion(change) {
+//  if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
+//    console.log('Changing from state: ' + currentEmotionalState);
+//    currentEmotionalState = change;
+//    currentEmot = emotionalLookup[currentEmotionalState];
+//    console.log('Current emotional state is: ' + currentEmotionalState);
+//  } else {
+//    console.log('invalid emotional transition attempted');
+//    console.log('Current emotional state is: ' + currentEmotionalState);
+//  }
+//}
 
 //list of classes----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -116,33 +110,40 @@ const playerEmotionalStatus = {
 
 const validActions = {
   //Valid item user input
-  pinkRoomKey: ['take key', 'my key now', 'key is mine', 'drop pink key', 'throw pink key', 'get rid of pink key'],
-  blueRoomKey: ['take key', 'i want key', 'taking key', 'drop blue key', 'throw blue key', 'get rid of blue key'],
-  puzzle1: ['pick up first puzzle piece', 'pick up 1 puzzle piece', 'pick up first puzzle', 'grab 1 puzzle piece', 'take puzzle 1'],
-  puzzle2: ['pick up second puzzle piece', 'pick up 2 puzzle piece', 'pick up second puzzle', 'grab 2 puzzle piece', 'take puzzle 2'],
-  puzzle3: ['pick up third puzzle piece', 'pick up 3 puzzle piece', 'pick up third puzzle', 'grab 3 puzzle piece', 'take puzzle 3'],
-  lantern: ['take lantern', 'steal lantern', 'grab lantern', 'my lantern'],
+  takePinkRoomKey: ['take pink key', 'my pink key now', 'pink key is mine'],
+  dropPinkRoomKey: ['drop pink key', 'throw pink key', 'get rid of pink key'],
+  takeBlueKey: ['take blue key', 'i want blue key', 'taking blue key'],
+  dropBlueKey: ['drop blue key', 'throw blue key', 'get rid of blue key'],
+  takePurpleTriangle: ['pick up first puzzle piece', 'pick up 1 puzzle piece', 'pick up first puzzle', 'grab 1 puzzle piece', 'take puzzle 1'],
+  dropPurpleTriangle: ['drop purple triangle', 'drop the purple triangle'],
+  takeOrangeTriangle: ['pick up second puzzle piece', 'pick up 2 puzzle piece', 'pick up second puzzle', 'grab 2 puzzle piece', 'take puzzle 2'],
+  dropOrangeTriangle: ['drop orange triangle', 'drop the orange triangle'],
+  takeGreenTriangle: ['pick up third puzzle piece', 'pick up 3 puzzle piece', 'pick up third puzzle', 'grab 3 puzzle piece', 'take puzzle 3'],
+  dropGreenTriangle: ['drop green triangle', 'drop the green triangle'],
+  combineTriangles: ['combine triangles', 'put together triangles', 'connect triangles', 'connect the triangles'],
+  signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
+  takeSignByDoor: ['take sign', 'take the sign', 'remove the sign', 'remove sign'],
+  statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
+  northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
+  triforce: ['insert triforce'],
 
   //Valid Player User Input
   checkInventory: ['i', 'inventory', 'check inventory', 'inv'],
   checkEmotionalStatus: ['s', 'check status', 'status', 'check emotional status'],
   yes: ['yes', 'yeah', 'y', 'yes ready'],
   no: ['no', 'n', 'not ready'],
-  prompt: ['>_ '],
   lookAround: ['look around', 'look around room', 'examine the room', 'examine room', 'l'],
 
   // yellowRoom user inputs
-  signByDoor: ['read sign', 'read the sign', 'look at the sign', 'examine the sign', 'examine sign', 'sign', 'take sign', 'pi'],
-  takeSignByDoor: ['take sign', 'take the sign', 'remove the sign', 'remove sign'],
-  statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
-  northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
   keyCodeAction: ['enter code', 'code in', 'key', 'key in', 'code', 'key code', 'code key'],
   keyCodeAnswer: ['0314'],
 
   //Valid Door User Input
   selectPinkDoor: ['open pink door', 'open pink', 'pink door', 'go in pink door', 'enter pink room', 'go in pink', 'enter pink door'],
-  selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red', 'enter red door'],
+  unlockPinkDoor: ['unlock pink door', 'use pink key on pink door', 'unlock pink door with pink key', 'unlock pink room'],
   selectBlueDoor: ['open blue door', 'open blue', 'blue door', 'go in blue door', 'enter blue room', 'go in blue', 'enter blue door'],
+  unlockBlueDoor: ['unlock blue door', 'use blue key on blue door', 'unlock blue door with blue key', 'unlock blue room'],
+  selectRedDoor: ['open red door', 'open red', 'red door', 'go in red door', 'enter red room', 'go in red', 'enter red door'],
   selectGreyDoor: ['open grey door', 'open grey', 'grey door', 'go in grey door', 'enter grey room', 'go in grey', 'enter grey door'],
   selectYellowDoor: ['open yellow door', 'open yellow', 'yellow door', 'go in yellow door', 'enter yellow room', 'go in yellow', 'enter yellow door'],
   selectGoldenDoor: ['open golden door', 'open golden', 'golden door', 'go in golden door', 'enter golden room', 'go in golden', 'enter golden door'],
@@ -155,15 +156,15 @@ const invalidActions = {
 };
 
 const itemDescrip = {
-  puzzle1: 'It is a small purple triangle puzzle piece, not heavy, but appears to be made out of wood',
-  puzzle2: 'It is a triangle-shaped orange puzzle piece, not heavy, but appears to be made out of wood',
-  puzzle3: 'It is a green triangle puzzle piece - made of wood and similar size as the other puzzle pieces',
-  lantern: 'An old and not-very-bright lantern that when held close to something, you can barely see.',
-  pinkRoomKey: '',
-  blueRoomKey: '',
+  purpleTriangle: 'It is a small purple triangle puzzle piece, not heavy, but appears to be made out of wood.',
+  orangeTriangle: 'It is a triangle-shaped orange puzzle piece, not heavy, but appears to be made out of wood.',
+  greenTriangle: 'It is a green triangle puzzle piece - made of wood and similar size as the other puzzle pieces.',
+  pinkKey: 'A semi rusty old key, it clearly was once painted completely pink.',
+  blueKey: 'A key made completely out of blue saphire.',
   signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nDate: Pie Day',
   statue: "partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand.",
   northPainting: 'beautiful yet gothic oil painting of 3 cats playing poker.',
+  triforce: 'shining pyramid of connecting green, purple, and orange triangles!',
 };
 
 //list of rooms------------------------------------------------------------------------------------------------------------------------------------------
@@ -185,18 +186,23 @@ let greyRoom = new Room(
 );
 
 //connects: greyRoom) and goldenRoom, has puzzle, is locked, needs key(redRoom) to unlock
-let pinkRoom = new Room('pinkRoom', 'You are in a pink room, which the look (and smell) of it can give you a stomach ache.  There\'s a small lantern in the corner and then out of the corner of your eye you spot a note in the middle of the room...\n', ['lantern'], true);
+let pinkRoom = new Room(
+  'pinkRoom',
+  'You are in a pink room, which the look (and smell) of it can give you a stomach ache.\nThere are 3 triangles, one purple, one orange, and one green. \nEach having what appears to be connecting mechanisms on two of their corners.\n',
+  ['purpleTriangle', 'orangeTriangle', 'greenTriangle'],
+  true
+);
 
 //needs better name, connects: greyRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let redRoom = new Room(
   'redRoom',
-  'You are in a red room.  There are 2 keys and 3 puzzle pieces.  One key will get you through to the end, the other will take you to your end.  You will need to pick up the puzzle pieces one at a time and bring it into the next room in order to use them to solve your way to get out of here alive.\n',
-  ['pinkRoomKey', 'blueRoomKey', 'puzzle1', 'puzzle2', 'puzzle3'],
+  '\nYou are in a red room.\nThere is a pink key and a blue key.\nAt the end of the room is a golden door.\nNext to it looks to three empty triangular inserts forming a pyramid.\n',
+  ['pinkKey', 'blueKey'],
   false
 );
 
 //connects: greyRoom(east), no items, needs key(redRoom) to unlock, if entered should console.log losing message && change status to dead
-let blueRoom = new Room('blueRoom', 'You are in a blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....\n', [], true);
+let blueRoom = new Room('blueRoom', '\nYou are in a blue room.  You chose poorly. Gas has encased the room and you will be dead in 3....2....\n', [], true);
 
 //connects: pinkRoom(north), no items, pinkRoom puzzle unlocks, if entered console.log victory message, change status to relief
 let goldenRoom = new Room('goldenRoom', 'You are in a golden room.\n', [], true);
@@ -213,14 +219,14 @@ const roomTable = {
 };
 
 //const mutableItemTable = {
-//  'signByDoor': signByDoor,
-//  'pinkRoomKey': pinkRoomKey,
-//  'blueRoomKey': blueRoomKey,
-//  'puzzle1': puzzle1,
-//  'puzzle2': puzzle2,
-//  'puzzle3': puzzle3,
-//  'lantern': lantern
-//}
+//  signByDoor: signByDoor,
+//  takePinkRoomKey: takePinkRoomKey,
+//  takeBlueKey: takeBlueKey,
+//  purpleTriangle: purpleTriangle,
+//  orangeTriangle: orangeTriangle,
+//  greenTriangle: greenTriangle,
+//  lantern: lantern,
+//};
 
 //const unmutableItemTable = {
 //  'statue': statue,
@@ -237,16 +243,18 @@ const roomTable = {
 //Player Information-------------------------------------------------------------------------------------------------------------------------------------
 
 let player = {
-  playerInventory: [],
+  playerInventory: ['pinkKey', 'blueKey', 'orangeTriangle', 'greenTriangle', 'purpleTriangle'],
   currentRoom: null,
   currentStatus: null,
 };
-//let currentEmot = emotionalLookup[currentEmotionalState]
 
 // Game Function ----------------------------------------------------------------------------------------------------------------------------------------
 
 //Start up message
-console.log(`\nWelcome to our awesome game! are you ready to live? Yes? or maybe no?\n\nSome helpful tips: You MUST describe the color of the door you wish to enter.\n`);
+console.log(
+  `\nWelcome to our awesome game!\n\nSome helpful tips: color really matters in this game when it comes to interacting with things!\n\nCommands:\ni = checks inventory\nl = checks your location\ns = checks your emotional status\n\nAre you ready to live? Yes? or maybe no?\n`
+);
+
 startGame();
 async function startGame() {
   let answer = await ask('>_ ');
@@ -276,7 +284,7 @@ async function play() {
 
   //Check inventory
   if (validActions.checkInventory.includes(answer)) {
-    console.log(`\nYou have: ${player.playerInventory}\n`);
+    console.log(`\nYou have: ${player.playerInventory.join(', ')}\n`);
     play();
   }
 
@@ -286,13 +294,69 @@ async function play() {
     play();
   }
 
-  //Look around the room, not working %100
+  //Look around the room
   else if (validActions.lookAround.includes(sanitizeString(answer))) {
-    console.log(`\nYou are in: ${player.currentRoom.description}`);
+    console.log(`\n${player.currentRoom.description}`);
+    play();
+  }
+
+  // //taking valid items
+  // else if (validActions.takePinkRoomKey.includes(sanitizeString(answer))) {
+  //   takeItem('pinkKey');
+  //   play();
+  // } else if (validActions.purpleTriangle.includes(sanitizeString(answer))) {
+  //   takeItem(answer);
+  //   play();
+  // } else if (validActions.orangeTriangle.includes(sanitizeString(answer))) {
+  //   takeItem(answer);
+  //   play();
+  // } else if (validActions.greenTriangle.includes(sanitizeString(answer))) {
+  //   takeItem(answer);
+  //   play();
+  // } else if (validActions.takeBlueKey.includes(sanitizeString(answer))) {
+  //   takeItem('blueKey');
+  //   play();
+  // } else if (validActions.takeBlueKey.includes(sanitizeString(answer))) {
+  //   takeItem(answer);
+  //   play();
+  // }
+
+  // //Drop Item in inventory
+  // else if (validActions.takePinkRoomKey.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // } else if (validActions.takeBlueKey.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // } else if (validActions.lantern.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // } else if (validActions.purpleTriangle.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // } else if (validActions.orangeTriangle.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // } else if (validActions.greenTriangle.includes(sanitizeString(answer))) {
+  //   dropItem(answer);
+  //   play();
+  // }
+
+  //Grey Room --------------------------------------------------------------------------------------------------------------------------------------------
+
+  //Entering Grey door
+  else if (validActions.selectGreyDoor.includes(sanitizeString(answer))) {
+    enterRoomState('greyRoom');
     play();
   }
 
   // yellowRoom ------------------------------------------------------------------------------------------------------------------------------------------
+
+  //Entering yellow room
+  else if (validActions.selectYellowDoor.includes(sanitizeString(answer))) {
+    enterRoomState('yellowRoom');
+    play();
+  }
 
   // Interacting with the Statue
   else if (validActions.statue.includes(sanitizeString(answer))) {
@@ -314,57 +378,10 @@ async function play() {
 
   // Interacting with the sign
   else if (validActions.signByDoor.includes(sanitizeString(answer))) {
-    console.log(`\nYou walk over to the sign and read it. \nIt states: ${itemDescrip.signByDoor}\n`);
+    console.log(`\nIt states: ${itemDescrip.signByDoor}\n`);
     play();
   } else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
   }
-
-  //taking valid items
-  else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  } else if (validActions.puzzle1.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  } else if (validActions.puzzle2.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  } else if (validActions.puzzle3.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  } else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
-    takeItem(answer);
-    play();
-  }
-
-
-  // //Drop Item in inventory
-
-  else if (validActions.pinkRoomKey.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  }
-  else if (validActions.blueRoomKey.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  } else if (validActions.lantern.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  } else if (validActions.puzzle1.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  } else if (validActions.puzzle2.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  }
-  else if (validActions.puzzle3.includes(sanitizeString(answer))) {
-    dropItem(answer);
-    play();
-  }
-
 
   //interacting with keypad
   else if (validActions.keyCodeAction.includes(sanitizeString(answer))) {
@@ -378,63 +395,109 @@ async function play() {
     }
     //Incorrect code for keypad
     else {
-      console.log(`\nFailure! Way to go! Way to use that brain power! What are you going to do now?\n`);
+      console.log(`\nFailure in code! Way to go! Way to use that brain power! What are you going to do now?\n`);
       play();
     }
   }
 
-  //selecting colored door ---------------------------------------------------------------------------------------------------------------
+  // blueRoom --------------------------------------------------------------------------------------------------------------------------------------------
 
-  //Grey door
-  else if (validActions.selectGreyDoor.includes(sanitizeString(answer))) {
-    enterRoomState('greyRoom');
-    play();
-  }
-
-  //Yellow door
-  else if (validActions.selectYellowDoor.includes(sanitizeString(answer))) {
-    enterRoomState('yellowRoom');
-    play();
-  }
-
-  //Pink door
-  else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
-    enterRoomState('pinkRoom');
-    play();
-  }
-
-  //Red door
-  else if (validActions.selectRedDoor.includes(sanitizeString(answer))) {
-    enterRoomState('redRoom');
-    play();
-  }
-
-  //Blue door
+  //Entering blue room
   else if (validActions.selectBlueDoor.includes(sanitizeString(answer))) {
     if (blueRoom.lock === true) {
       enterRoomState('blueRoom');
       play();
     } else {
-      console.log(blueRoom.description)
-      process.exit()
+      console.log(blueRoom.description);
+      process.exit();
     }
   }
 
-  //Golden door
-  else if (validActions.selectGoldenDoor.includes(sanitizeString(answer))) {
-    enterRoomState('goldenRoom');
+  //Unlocking blue door
+  else if (validActions.unlockBlueDoor.includes(sanitizeString(answer))) {
+    if (player.playerInventory.includes('blueKey') && player.currentRoom === roomTable['greyRoom']) {
+      blueRoom.lock = false;
+      console.log('\nYou unlocked the blue door!\n');
+      play();
+    } else if (player.currentRoom !== roomTable['greyRoom']) {
+      console.log("\nYou aren't even in the same room as the blue door, you dingus!\n");
+      play();
+    } else {
+      console.log('\nNo key? How are you going to unlock a door without the key?\n');
+      play();
+    }
+  }
+
+  // Pink room -------------------------------------------------------------------------------------------------------------------------------------------
+
+  //Entering Pink Room
+  else if (validActions.selectPinkDoor.includes(sanitizeString(answer))) {
+    enterRoomState('pinkRoom');
     play();
   }
 
-  // Checks for invalid user input ---------------------------------------------------------------------------------------------------------------------
+  // Unlocking pink door
+  else if (validActions.unlockPinkDoor.includes(sanitizeString(answer))) {
+    if (player.playerInventory.includes('pinkKey') && player.currentRoom === roomTable['greyRoom']) {
+      pinkRoom.lock = false;
+      console.log('\nYou unlocked the pink door!\n');
+      play();
+    } else if (player.currentRoom !== roomTable['greyRoom']) {
+      console.log("\nYou aren't even in the same room as the pink door, you dingus!\n");
+      play();
+    } else {
+      console.log('\nNo key? How are you going to unlock a door without the key?\n');
+      play();
+    }
+  }
+
+  //Red Room----------------------------------------------------------------------------------------------------------------------------------------------
+
+  //Entering red room
+  else if (validActions.selectRedDoor.includes(sanitizeString(answer))) {
+    enterRoomState('redRoom');
+    play();
+  }
+
+  //Form the triforce
+  else if (validActions.combineTriangles.includes(sanitizeString(answer))) {
+    if (player.playerInventory.includes('orangeTriangle', 'purpleTriangle', 'greenTriangle')) {
+      console.log(`\nYou formed the triforce!\n`);
+      player.playerInventory.push('triforce');
+      play();
+    }
+  }
+
+  //Golden Room ------------------------------------------------------------------------------------------------------------------------------------------
+
+  //Entering Golden room
+  else if (validActions.selectGoldenDoor.includes(sanitizeString(answer))) {
+    if (goldenRoom.lock === true) {
+      enterRoomState('goldenRoom');
+      play();
+    } else {
+      console.log("\nYou did it! Somehow we didn't kill you!\nYou should feel special about that!\nWe hope there aren't too many hard feelings!\n");
+      process.exit();
+    }
+  }
+
+  //Unlock Golden door
+  else if (validActions.triforce.includes(sanitizeString(answer))) {
+    if (player.playerInventory.includes('triforce') && player.currentRoom === roomTable['redRoom']) {
+      goldenRoom.lock = false;
+      console.log('\nYou hear mechanisms turning and finally an audible pop!\nThe door is unlocked!\n')
+      play()
+    } else if (player.currentRoom !== roomTable['redRoom']){
+      console.log("\nYou aren't even in the same room as the triangle inserts, you dingus!\n");
+      play();
+    } else {
+      console.log('\nPretty sure you need to insert something.\n')
+    }
+  }
+
+  // Checks for invalid user input -----------------------------------------------------------------------------------------------------------------------
   else {
     console.log(`\nInvalid prompt: ${answer}\n`);
     play();
   }
 }
-
-//if user hits exit at any point
-// if(answer === 'exit'){
-//    console.log("Come on, don't be scared, figure out how to get out of the room!")
-// process.exit()
-//
