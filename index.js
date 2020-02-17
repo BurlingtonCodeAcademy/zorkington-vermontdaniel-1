@@ -165,7 +165,7 @@ const itemDescrip = {
   greenTriangle: 'It is a green triangle puzzle piece - made of wood and similar size as the other puzzle pieces.',
   pinkKey: 'A semi rusty old key, it clearly was once painted completely pink.',
   blueKey: 'A key made completely out of blue saphire.',
-  signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nDate: Pie Day',
+  signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nThe keypad accepts only four numbers!\nDate: Pie Day',
   statue: "partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand.",
   northPainting: 'beautiful yet gothic oil painting of 3 cats playing poker.',
   triforce: 'shining pyramid of connecting green, purple, and orange triangles!',
