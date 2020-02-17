@@ -242,7 +242,7 @@ async function startGame() {
     console.log(`\n${yellowRoom.description}\nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing the door with a sign on it.\nWhat should you do?\n`);
     player.currentRoom = roomTable['yellowRoom'];
     player.currentStatus = playerEmotionalStatus.scared;
-    console.log(`You are feeling ${player.currentStatus}!\n`)
+    console.log(`You are feeling ${player.currentStatus}!\n`);
     play();
     //If no, exits game
   } else if (validActions.no.includes(sanitizeString(answer))) {
