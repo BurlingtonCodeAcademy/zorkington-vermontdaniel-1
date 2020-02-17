@@ -7,8 +7,8 @@ function ask(questionText) {
   });
 }
 
-/*******************************************************************************************************************************************************/
-// State Machines ---------------------------------------------------------------------------------------------------------------------------------------
+/********************************************************************************************************************************************************/
+// State Machines ----------------------------------------------------------------------------------------------------------------------------------------
 
 // Room Transition State Machine
 let roomStates = {
@@ -28,7 +28,7 @@ let playerEmotionalState = {
 };
 let currentEmotionalState = 'scared';
 
-//list of functions--------------------------------------------------------------------------------------------------------------------------------------
+//list of functions---------------------------------------------------------------------------------------------------------------------------------------
 
 //Moves from one room to another
 function enterRoomState(newRoomState) {
@@ -72,24 +72,20 @@ function takeItem(item) {
 //for being able to drop item
 function dropItem(item) {
   let indexOfItem = player.playerInventory.indexOf(item);
-  let playerItem = player.playerInventory.splice(indexOfItem, 1)
-  roomTable[currentRoomState].roomInventory.push(playerItem)
+  let playerItem = player.playerInventory.splice(indexOfItem, 1);
+  roomTable[currentRoomState].roomInventory.push(playerItem);
   console.log(`\nYou just dropped ${item} it like it's hot\n`);
   console.log(`\nYour current inventory is: ${player.playerInventory.join(', ')}\n`);
 }
 
 //Changes player emotional state
-//function changeEmotion(change) {
-//  if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
-//    console.log('Changing from state: ' + currentEmotionalState);
-//    currentEmotionalState = change;
-//    currentEmot = emotionalLookup[currentEmotionalState];
-//    console.log('Current emotional state is: ' + currentEmotionalState);
-//  } else {
-//    console.log('invalid emotional transition attempted');
-//    console.log('Current emotional state is: ' + currentEmotionalState);
-//  }
-//}
+function changeEmotion(change) {
+  if (playerEmotionalState[currentEmotionalState].canChangeTo.includes(change)) {
+    currentEmotionalState = change;
+    player.currentStatus = currentEmotionalState;
+    console.log(`\nYou are feeling ${currentEmotionalState}!`);
+  }
+}
 
 //list of classes----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -165,7 +161,8 @@ const itemDescrip = {
   greenTriangle: 'It is a green triangle puzzle piece - made of wood and similar size as the other puzzle pieces.',
   pinkKey: 'A semi rusty old key, it clearly was once painted completely pink.',
   blueKey: 'A key made completely out of blue saphire.',
-  signByDoor: 'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nThe keypad accepts only four numbers!\nDate: Pie Day',
+  signByDoor:
+    'There is only 1 safe way out - if you choose poorly, you will meet your demise. \nRead carefully and choose wisely to get out of here....Alive!\nThe keypad accepts only four numbers!\nDate: Pie Day',
   statue: "partially destroyed marble statue of an angel. \nIt's nose is missing and only one finger is left of its right hand.",
   northPainting: 'beautiful yet gothic oil painting of 3 cats playing poker.',
   triforce: 'shining pyramid of connecting green, purple, and orange triangles!',
@@ -222,28 +219,6 @@ const roomTable = {
   goldenRoom: goldenRoom,
 };
 
-//const mutableItemTable = {
-//  signByDoor: signByDoor,
-//  takePinkRoomKey: takePinkRoomKey,
-//  takeBlueKey: takeBlueKey,
-//  purpleTriangle: purpleTriangle,
-//  orangeTriangle: orangeTriangle,
-//  greenTriangle: greenTriangle,
-//  lantern: lantern,
-//};
-
-//const unmutableItemTable = {
-//  'statue': statue,
-//  'northPainting': northPainting
-//
-//}
-
-//let emotionalTable = {
-//  'dead': dead,
-//  'relief': relief,
-//  'scared': scared
-//}
-
 // Player Information ------------------------------------------------------------------------------------------------------------------------------------
 let player = {
   playerInventory: [],
@@ -251,7 +226,7 @@ let player = {
   currentStatus: null,
 };
 
-// Game Function ----------------------------------------------------------------------------------------------------------------------------------------
+// Game Function -----------------------------------------------------------------------------------------------------------------------------------------
 
 //Start up message
 console.log(
@@ -267,6 +242,7 @@ async function startGame() {
     console.log(`\n${yellowRoom.description}\nYou don't know how you got here, and frankly don't even remember your name! \nYou are facing the door with a sign on it.\nWhat should you do?\n`);
     player.currentRoom = roomTable['yellowRoom'];
     player.currentStatus = playerEmotionalStatus.scared;
+    console.log(`You are feeling ${player.currentStatus}!\n`)
     play();
     //If no, exits game
   } else if (validActions.no.includes(sanitizeString(answer))) {
@@ -293,7 +269,7 @@ async function play() {
 
   //Check Emotional Status
   else if (validActions.checkEmotionalStatus.includes(answer)) {
-    console.log(`\nYou are: ${player.currentStatus}\n`);
+    console.log(`\nYou are feeling: ${player.currentStatus}\n`);
     play();
   }
 
@@ -438,7 +414,8 @@ async function play() {
     //correct code for keypad
     if (validActions.keyCodeAnswer.includes(sanitizeString(answer))) {
       greyRoom.lock = false;
-      enterRoomState('greyRoom');
+      changeEmotion('relief');
+      console.log('\nThe keypad beeps three times! Maybe the door is unlocked now?\n');
       play();
     }
     //Incorrect code for keypad
