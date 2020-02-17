@@ -429,7 +429,6 @@ async function play() {
   else if (validActions.signByDoor.includes(sanitizeString(answer))) {
     console.log(`\nIt states: ${itemDescrip.signByDoor}\n`);
     play();
-  } else if (validActions.takeSignByDoor.includes(sanitizeString(answer))) {
   }
 
   //interacting with keypad
