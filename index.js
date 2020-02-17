@@ -127,7 +127,7 @@ const validActions = {
   dropSignByDoor: ['drop sign', 'drop the sign'],
   statue: ['look at statue', 'examine statue', 'look at the statue', 'examine the statue', 'statue', 'look at statue of angel', 'look at angel statue', 'look at the statue of the angel'],
   northPainting: ['look at painting', 'examine painting', 'look at the painting', 'examine the painting', 'painting'],
-  useTriforce: ['insert triforce'],
+  useTriforce: ['insert triforce', 'use triforce'],
   takeTriforce: ['take triforce', 'pick up triforce', 'grab triforce'],
   dropTriforce: ['drop triforce', 'drop the triforce'],
 
@@ -176,7 +176,7 @@ const itemDescrip = {
 //connects: greyRoom, has three items and is locked.
 let yellowRoom = new Room(
   'yellowRoom',
-  `You are in a dirty yellow, dark, dingy, smelly room. \nAgainst one of the walls is a ${itemDescrip.statue}\nOn another wall is a ${itemDescrip.northPainting}\nThere is a single grey door with a keypad attached to it.\n`,
+  `You are in a dirty yellow, dark, dingy, smelly room. \nAgainst one of the walls is a ${itemDescrip.statue}\nOn another wall is a ${itemDescrip.northPainting}\nThere is a single grey door with a keypad attached to it.\nThere is also a sign next to the door as well.\n`,
   ['statue', 'northPainting', 'signByDoor'],
   false
 );
@@ -200,7 +200,7 @@ let pinkRoom = new Room(
 //needs better name, connects: greyRoom(north), has 2 keys, and three puzzle pieces, is unlocked
 let redRoom = new Room(
   'redRoom',
-  'You are in a red room.\nThere is a pink key and a blue key.\nAt the end of the room is a golden door.\nNext to it looks to three empty triangular inserts forming a pyramid.\n',
+  'You are in a red room.\nThere is a pink key and a blue key.\nAt the end of the room is a golden door.\nNext to it looks to be one empty triangular insert forming a pyramid made of three triangles.\n',
   ['pinkKey', 'blueKey'],
   false
 );
@@ -443,7 +443,7 @@ async function play() {
     }
     //Incorrect code for keypad
     else {
-      console.log(`\nFailure in code! Way to go! Way to use that brain power! What are you going to do now?\n`);
+      console.log(`\nFailure in code! Way to go!\nWay to use that brain power! What are you going to do now?\n`);
       play();
     }
   }
