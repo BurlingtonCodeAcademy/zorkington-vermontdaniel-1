@@ -1,3 +1,8 @@
+
+/** Overall, really great job! You completed all of the stories and went on to add more rooms and stories. The story line is pretty creative, I like it!
+ *  Your code is very neat and organized. Your comments are sufficient for anyone to know what's happening in each part of your code. I like your use
+ *  of a state machine to control the players emotional status! Very cool. I don't have a ton of comments for you. You have a good understanding of functions,
+ *  objects and classes, and the rest of the topics and lessons discussed during week 2 and how they all work together. Great job. **/
 const readline = require('readline');
 const readlineInterface = readline.createInterface(process.stdin, process.stdout);
 
@@ -10,6 +15,7 @@ function ask(questionText) {
 /********************************************************************************************************************************************************/
 // State Machines ----------------------------------------------------------------------------------------------------------------------------------------
 
+/** Great use of state machines to restrict room movement and player emotion status **/
 // Room Transition State Machine
 let roomStates = {
   yellowRoom: { canChangeTo: ['greyRoom'] },
@@ -51,6 +57,7 @@ function enterRoomState(newRoomState) {
   }
 }
 
+/** Nice use of a helper function to sanitize the user's input**/
 //Sanitizes user input to valid format
 function sanitizeString(string) {
   string = string
@@ -61,6 +68,8 @@ function sanitizeString(string) {
   return string;
 }
 
+/** These functions here are good. Since they are actions that a player does, one thing you could try to do is attach these to a Player object or class
+ *  and call them through an instance of a player! **/
 function takeItem(item) {
   console.log(`\nYou are allowed to take the ${item}`);
   let indexOfItem = roomTable[currentRoomState].roomInventory.indexOf(item);
@@ -105,6 +114,7 @@ const playerEmotionalStatus = {
   scared: 'scared',
 };
 
+/** I like the extensive list of actions and different ways that someone can do something. Nice! **/
 const validActions = {
   //Valid item user input
   takePinkRoomKey: ['take pink key', 'my pink key now', 'pink key is mine', 'pick up pink key'],
